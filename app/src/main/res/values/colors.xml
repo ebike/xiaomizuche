@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="main_tone">#F08200</color>
+    <color name="blue">#0096D7</color>
+    <color name="blue_disable">#66CCF5</color>
+
+    <color name="font_gray">#999999</color>
+    <color name="gray_1">#CCCCCC</color>
+    <color name="gray_2">#E5E5E5</color>
+    <color name="gray_bg">#f9f9f9</color>
+    <color name="gray_border">#CCCCCC</color>
+    <color name="white_f5">#F5F5F5</color>
+
+    <color name="bottombar_bg">#FCFCFC</color>
+    <color name="bottombar_line">#D7D7D7</color>
+    <color name="bottombar_text">#9B9B9B</color>
+
+    <color name="chart_data">#0B6B90</color>
+    <color name="chart_unselect">#F8F8F8</color>
+    <color name="chart_select">#F3F3F3</color>
+
+    <color name="transparent">#00000000</color>
+
+
+
+    <color name="dc_view_line">#e6e6e6</color>
+    <color name="gray_dark">#1c1c1c</color>
+    <color name="gray_3">#333333</color>
+    <color name="actionsheet_blue">#037BFF</color>
+    <color name="actionsheet_red">#FD4A2E</color>
+    <color name="actionsheet_gray">#8F8F8F</color>
+    <color name="dc_title_text">#999999</color> 
+    <color name="dc_context_text">#1c1c1c</color>
+    <color name="bold_gray">#d1d1d1</color>
+    <color name="color_gray">#a2a2a2</color>
+    <color name="gray">#eaebed</color>
+    <color name="list_selector_disable">#aaa</color>
+    <color name="gray_6">#666666</color>
+    <color name="province_line_border">#C7C7C7</color>
+
+
+    <!--dialog中按钮字体颜色 -->
+    <color name="custom_dialog_btn">#ff1E90FF</color>
+    <color name="dashboard_sale_view_end_color">#444a63</color>
+    <color name="expand_tab_item_selector">@color/dashboard_sale_view_end_color</color>
+    <color name="listviewfilter_color_black">#1c1c1c</color>
+    <color name="color_title">#444a63</color>
+    <color name="popup_main_background">#51000000</color>
+    <color name="refresh_view_bg">#f6f6f6</color>
+
+
+
 </resources>

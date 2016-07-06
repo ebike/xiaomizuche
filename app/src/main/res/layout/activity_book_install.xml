@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_bg"
+    android:fitsSystemWindows="true">
+
+    <com.xiaomizuche.view.TopBarView
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:back_is_finish="true"
+        app:center_text="@string/book_install_action"
+        app:has_center="true"
+        app:has_left="true"
+        app:has_left_clickable="true"
+        app:has_right="true"
+        app:has_right_clickable="true"
+        app:left_icon="@mipmap/back_icon"
+        app:left_text="@string/login"
+        app:right_text="@string/submit" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_bar"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.xiaomizuche.view.RowLabelEditView
+                android:id="@+id/rlev_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:row_label_edit_bottom_line="2"
+                app:row_label_edit_hint="@string/app_require_input"
+                app:row_label_edit_label="@string/your_name"
+                app:row_label_edit_top_line="1" />
+
+            <com.xiaomizuche.view.RowLabelEditView
+                android:id="@+id/rlev_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:row_label_edit_bottom_line="2"
+                app:row_label_edit_hint="@string/app_require_input"
+                app:row_label_edit_label="@string/contact_phone" />
+
+            <com.xiaomizuche.view.RowLabelValueView
+                android:id="@+id/rlvv_region"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:row_label_value_bottom_line="2"
+                app:row_label_value_has_right_arrow="true"
+                app:row_label_value_label="@string/region"
+                app:row_label_value_value="@string/app_require_check" />
+
+            <com.xiaomizuche.view.RowLabelEditView
+                android:id="@+id/rlev_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:row_label_edit_bottom_line="2"
+                app:row_label_edit_hint="@string/app_require_input"
+                app:row_label_edit_label="@string/detailed_address" />
+
+            <com.xiaomizuche.view.RowLabelEditView
+                android:id="@+id/rlev_install_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:row_label_edit_bottom_line="2"
+                app:row_label_edit_hint="@string/app_require_input"
+                app:row_label_edit_label="@string/install_count" />
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
