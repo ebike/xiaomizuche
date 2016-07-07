@@ -60,6 +60,6 @@
 
     <View
         android:id="@+id/form_divider"
-        style="@style/style_base_line" />
+        style="@style/base_line" />
 </LinearLayout>
 

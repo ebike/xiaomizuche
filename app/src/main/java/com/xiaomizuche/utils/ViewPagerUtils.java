@@ -39,29 +39,35 @@ public class ViewPagerUtils {
             TextView textView = textViews.get(i);
             ImageView imageView = imageViews.get(i);
             if (index == i) {
-                textView.setTextColor(context.getResources().getColor(R.color.blue));
+                textView.setTextColor(context.getResources().getColor(R.color.main_tone));
                 switch (i) {
                     case 0:
-                        imageView.setImageResource(R.mipmap.icon_location_hover);
+                        imageView.setImageResource(R.mipmap.icon_menu_home_active);
                         break;
                     case 1:
-                        imageView.setImageResource(R.mipmap.icon_chart_hover);
+                        imageView.setImageResource(R.mipmap.icon_menu_hire_car_active);
                         break;
                     case 2:
-                        imageView.setImageResource(R.mipmap.icon_alarm_hover);
+                        imageView.setImageResource(R.mipmap.icon_menu_shop_active);
+                        break;
+                    case 3:
+                        imageView.setImageResource(R.mipmap.icon_menu_my_active);
                         break;
                 }
             } else {
-                textView.setTextColor(context.getResources().getColor(R.color.bottombar_text));
+                textView.setTextColor(context.getResources().getColor(R.color.font_gray));
                 switch (i) {
                     case 0:
-                        imageView.setImageResource(R.mipmap.icon_location);
+                        imageView.setImageResource(R.mipmap.icon_menu_home);
                         break;
                     case 1:
-                        imageView.setImageResource(R.mipmap.icon_chart);
+                        imageView.setImageResource(R.mipmap.icon_menu_hire_car);
                         break;
                     case 2:
-                        imageView.setImageResource(R.mipmap.icon_alarm);
+                        imageView.setImageResource(R.mipmap.icon_menu_shop);
+                        break;
+                    case 3:
+                        imageView.setImageResource(R.mipmap.icon_menu_my);
                         break;
                 }
             }

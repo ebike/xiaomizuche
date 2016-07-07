@@ -17,7 +17,7 @@
         app:left_icon="@mipmap/icon_title_user" />
 
     <View
-        style="@style/style_base_line"
+        style="@style/base_line"
         android:background="@color/chart_data" />
 
     <LinearLayout
@@ -53,7 +53,7 @@
         </HorizontalScrollView>
 
         <View
-            style="@style/style_base_line"
+            style="@style/base_line"
             android:background="@color/gray_border" />
 
         <LinearLayout
@@ -157,7 +157,7 @@
 
 
             <View
-                style="@style/style_base_line"
+                style="@style/base_line"
                 android:background="@color/gray_border" />
 
             <LinearLayout

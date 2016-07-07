@@ -4,7 +4,7 @@
     android:orientation="vertical">
 
     <View android:id="@+id/form_divider"
-        style="@style/style_base_line"/>
+        style="@style/base_line"/>
 
     <TextView
         android:id="@+id/form_tag"
@@ -19,7 +19,7 @@
         android:text="查看名片" />
 
     <View
-        style="@style/style_base_line"/>
+        style="@style/base_line"/>
 
     <RelativeLayout
         android:id="@+id/form_contact_card"

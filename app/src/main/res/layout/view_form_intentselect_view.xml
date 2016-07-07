@@ -63,7 +63,7 @@
 
     <View
         android:id="@+id/view_intent_line"
-        style="@style/style_base_line"
+        style="@style/base_line"
         android:layout_marginLeft="16dp" />
 
 </LinearLayout>

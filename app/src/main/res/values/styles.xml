@@ -67,10 +67,10 @@
         <item name="android:textColor">@color/main_tone</item>
     </style>
 
-    <style name="style_base_line">
+    <style name="base_line">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">@color/dc_view_line</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/main_line</item>
     </style>
 
     <style name="PopupWindowAnimation">

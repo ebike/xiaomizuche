@@ -5,9 +5,6 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-/**
- * Created by jimmy on 2015/11/16.
- */
 public class NotSlideViewPager extends ViewPager {
     private boolean scrollble = false;
 

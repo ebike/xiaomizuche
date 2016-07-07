@@ -58,5 +58,5 @@
 
     </RelativeLayout>
 
-    <View style="@style/style_base_line" />
+    <View style="@style/base_line" />
 </LinearLayout>

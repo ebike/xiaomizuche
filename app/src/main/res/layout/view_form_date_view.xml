@@ -61,7 +61,7 @@
 
     <View
         android:id="@+id/formview_baseline"
-        style="@style/style_base_line"
+        style="@style/base_line"
         android:layout_marginLeft="16dp" />
 
 </LinearLayout>

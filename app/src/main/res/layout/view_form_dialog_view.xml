@@ -61,7 +61,7 @@
 
     <View
         android:id="@+id/view_baselin"
-        style="@style/style_base_line"
+        style="@style/base_line"
         android:layout_marginLeft="16dp" />
 
 </LinearLayout>

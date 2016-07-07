@@ -17,7 +17,7 @@
         app:left_icon="@mipmap/back_icon" />
 
     <View
-        style="@style/style_base_line"
+        style="@style/base_line"
         android:layout_marginTop="16dp" />
 
     <RelativeLayout
@@ -49,7 +49,7 @@
     </RelativeLayout>
 
     <View
-        style="@style/style_base_line"
+        style="@style/base_line"
         android:layout_marginLeft="16dp" />
 
     <RelativeLayout
@@ -80,5 +80,5 @@
 
     </RelativeLayout>
 
-    <View style="@style/style_base_line" />
+    <View style="@style/base_line" />
 </LinearLayout>

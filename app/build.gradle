@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.jcsoft.ecar"
+        applicationId "com.xiaomizuche"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1

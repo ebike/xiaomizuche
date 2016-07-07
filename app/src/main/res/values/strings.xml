@@ -81,4 +81,9 @@
     <string name="string_confirm">确定</string>
     <string name="string_reset">清除</string>
 
+    <string name="home">首页</string>
+    <string name="hire_car">租车</string>
+    <string name="shop">商城</string>
+    <string name="my">我的</string>
+
 </resources>

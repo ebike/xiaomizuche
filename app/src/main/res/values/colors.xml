@@ -3,6 +3,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="main_tone">#F08200</color>
+    <color name="main_line">#E6E8EA</color>
     <color name="blue">#0096D7</color>
     <color name="blue_disable">#66CCF5</color>
 
@@ -25,7 +26,6 @@
 
 
 
-    <color name="dc_view_line">#e6e6e6</color>
     <color name="gray_dark">#1c1c1c</color>
     <color name="gray_3">#333333</color>
     <color name="actionsheet_blue">#037BFF</color>

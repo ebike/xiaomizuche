@@ -19,7 +19,7 @@
         app:right_text="@string/save" />
 
     <View
-        style="@style/style_base_line"
+        style="@style/base_line"
         android:layout_marginTop="16dp" />
 
     <EditText
@@ -34,5 +34,5 @@
         android:textSize="14sp" />
 
 
-    <View style="@style/style_base_line" />
+    <View style="@style/base_line" />
 </LinearLayout>
