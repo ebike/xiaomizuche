@@ -64,7 +64,7 @@ public class UpdateTextValueActivity extends BaseActivity {
                 //老值和新值不同是进行保存
                 if (!fieldValue.equals(newValue)) {
                     Map<String, String> map = new HashMap<String, String>();
-                    map.put("carId", AppConfig.userInfoBean.getCarId() + "");
+//                    map.put("carId", AppConfig.userInfoBean.getCarId() + "");
                     map.put(fieldName, newValue);
                     String url = "";
                     if (type == 1) {

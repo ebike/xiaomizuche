@@ -9,22 +9,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
 import com.xiaomizuche.activity.MainActivity;
 import com.xiaomizuche.adapter.AlarmMessageAdapter;
 import com.xiaomizuche.base.BaseListFragment;
 import com.xiaomizuche.bean.AlarmMessageBean;
-import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.callback.DCommonCallback;
-import com.xiaomizuche.callback.DFinishedCallback;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.db.XUtil;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
-import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.view.PullListFragmentHandler;
 import com.xiaomizuche.view.TopBarView;
 import com.xiaomizuche.view.pullrefresh.EmptyViewForList;
@@ -38,7 +33,6 @@ import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -172,73 +166,73 @@ public class AlarmMessageFragment extends BaseListFragment {
         if (!isPrepared || !isVisible || hasLoadedOnce || !isAdded()) {
             return;
         }
-        try {
-            //先查询数据库中消息数据
-            if (!loadedDB) {
-                alarmMessageBeans = XUtil.db.selector(AlarmMessageBean.class).where("carId", "=", AppConfig.userInfoBean.getCarId()).orderBy("eventId", true).findAll();
-                loadedDB = true;
-                if (alarmMessageBeans != null && alarmMessageBeans.size() > 0) {
-                    adapter.setList(alarmMessageBeans);
-                    hasLoadedOnce = true;
-                } else {
-                    alarmMessageBeans = new ArrayList<AlarmMessageBean>();
-                    requestDatas();
-                }
-            } else {
-                //从接口获取数据
-                RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getNewAlarmEventInfo(mark, eventId));
-                DHttpUtils.get_String((MainActivity) getActivity(), true, params, new DFinishedCallback<String>() {
-                    @Override
-                    public void onFinished() {
-                        mHandler.sendEmptyMessage(PULL_TO_REFRESH_COMPLETE);
-                    }
-
-                    @Override
-                    public void onSuccess(String result) {
-                        ResponseBean<List<AlarmMessageBean>> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<List<AlarmMessageBean>>>() {
-                        }.getType());
-                        if (bean.getCode() == 1) {
-                            if (bean.getData() != null && bean.getData().size() > 0) {
-                                if (mPage == 1) {
-                                    alarmMessageBeans.addAll(0, bean.getData());
-                                    //刷新数据后更新底部菜单报警消息角标数
-                                    if (!AppConfig.badge.isShown()) {
-                                        AppConfig.badge.show();
-                                    }
-                                    String oldCount = AppConfig.badge.getText().toString();
-                                    int count = 0;
-                                    if (!CommonUtils.strIsEmpty(oldCount)) {
-                                        count = Integer.valueOf(oldCount) + bean.getData().size();
-                                    } else {
-                                        count = bean.getData().size();
-                                    }
-                                    if (count == 0) {
-                                        AppConfig.badge.hide();
-                                    } else {
-                                        AppConfig.badge.setText(count + "");
-                                    }
-                                } else {
-                                    alarmMessageBeans.addAll(bean.getData());
-                                }
-                            } else {
-                                mIsMore = false;
-                            }
-                            hasLoadedOnce = true;
-                            //刷新界面
-                            setViewData();
-                            //将数据插入数据库
-                            insertAlarmMessageBeansToDB(bean.getData());
-                        } else {
-                            pullToRefreshListView.setBackgroundColor(getResources().getColor(R.color.transparent));
-                            emptyViewForList.setTextSize(16);
-                            emptyViewForList.setTextDesc(bean.getErrmsg());
-                        }
-                    }
-                });
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            //先查询数据库中消息数据
+//            if (!loadedDB) {
+//                alarmMessageBeans = XUtil.db.selector(AlarmMessageBean.class).where("carId", "=", AppConfig.userInfoBean.getCarId()).orderBy("eventId", true).findAll();
+//                loadedDB = true;
+//                if (alarmMessageBeans != null && alarmMessageBeans.size() > 0) {
+//                    adapter.setList(alarmMessageBeans);
+//                    hasLoadedOnce = true;
+//                } else {
+//                    alarmMessageBeans = new ArrayList<AlarmMessageBean>();
+//                    requestDatas();
+//                }
+//            } else {
+//                //从接口获取数据
+//                RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getNewAlarmEventInfo(mark, eventId));
+//                DHttpUtils.get_String((MainActivity) getActivity(), true, params, new DFinishedCallback<String>() {
+//                    @Override
+//                    public void onFinished() {
+//                        mHandler.sendEmptyMessage(PULL_TO_REFRESH_COMPLETE);
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(String result) {
+//                        ResponseBean<List<AlarmMessageBean>> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<List<AlarmMessageBean>>>() {
+//                        }.getType());
+//                        if (bean.getCode() == 1) {
+//                            if (bean.getData() != null && bean.getData().size() > 0) {
+//                                if (mPage == 1) {
+//                                    alarmMessageBeans.addAll(0, bean.getData());
+//                                    //刷新数据后更新底部菜单报警消息角标数
+//                                    if (!AppConfig.badge.isShown()) {
+//                                        AppConfig.badge.show();
+//                                    }
+//                                    String oldCount = AppConfig.badge.getText().toString();
+//                                    int count = 0;
+//                                    if (!CommonUtils.strIsEmpty(oldCount)) {
+//                                        count = Integer.valueOf(oldCount) + bean.getData().size();
+//                                    } else {
+//                                        count = bean.getData().size();
+//                                    }
+//                                    if (count == 0) {
+//                                        AppConfig.badge.hide();
+//                                    } else {
+//                                        AppConfig.badge.setText(count + "");
+//                                    }
+//                                } else {
+//                                    alarmMessageBeans.addAll(bean.getData());
+//                                }
+//                            } else {
+//                                mIsMore = false;
+//                            }
+//                            hasLoadedOnce = true;
+//                            //刷新界面
+//                            setViewData();
+//                            //将数据插入数据库
+//                            insertAlarmMessageBeansToDB(bean.getData());
+//                        } else {
+//                            pullToRefreshListView.setBackgroundColor(getResources().getColor(R.color.transparent));
+//                            emptyViewForList.setTextSize(16);
+//                            emptyViewForList.setTextDesc(bean.getErrmsg());
+//                        }
+//                    }
+//                });
+//            }
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
     //刷新界面

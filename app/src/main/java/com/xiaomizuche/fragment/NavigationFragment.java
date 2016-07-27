@@ -62,7 +62,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     private void initDatas() {
         if (AppConfig.userInfoBean != null) {
             nameTV.setText(AppConfig.userInfoBean.getUserName());
-            carIdTV.setText(AppConfig.userInfoBean.getCarId() + "");
+//            carIdTV.setText(AppConfig.userInfoBean.getCarId() + "");
         }
     }
 

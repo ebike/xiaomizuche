@@ -9,13 +9,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.slidingmenu.lib.SlidingMenu;
 import com.xiaomizuche.R;
 import com.xiaomizuche.adapter.ViewPagerFragmentAdapter;
 import com.xiaomizuche.base.BaseActivity;
-import com.xiaomizuche.bean.AlarmMessageBean;
 import com.xiaomizuche.bean.TabIndicator;
 import com.xiaomizuche.constants.AppConfig;
-import com.xiaomizuche.db.XUtil;
 import com.xiaomizuche.event.ChangeLocationEvent;
 import com.xiaomizuche.fragment.AlarmMessageFragment;
 import com.xiaomizuche.fragment.ChartFragment;
@@ -23,10 +22,7 @@ import com.xiaomizuche.fragment.LocationFragment;
 import com.xiaomizuche.fragment.NavigationFragment;
 import com.xiaomizuche.utils.ViewPagerUtils;
 import com.xiaomizuche.view.NotSlideViewPager;
-import com.readystatesoftware.viewbadger.BadgeView;
-import com.slidingmenu.lib.SlidingMenu;
 
-import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ViewInject;
 
 import java.util.ArrayList;
@@ -143,21 +139,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void setData() {
-        try {
-            //气泡中显示的数字是本地数据库中未读的消息数量
-            if (AppConfig.userInfoBean != null) {
-                long count = XUtil.db.selector(AlarmMessageBean.class).where("carId", "=", AppConfig.userInfoBean.getCarId()).and("status", "=", "1").count();
-                AppConfig.badge = new BadgeView(this, alarmLinearLayout);
-                if (count > 0) {
-                    //显示气泡
-                    AppConfig.badge.setText(count + "");
-                    AppConfig.badge.setBadgeMargin(0);
-                    AppConfig.badge.show();
-                }
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            //气泡中显示的数字是本地数据库中未读的消息数量
+//            if (AppConfig.userInfoBean != null) {
+//                long count = XUtil.db.selector(AlarmMessageBean.class).where("carId", "=", AppConfig.userInfoBean.getCarId()).and("status", "=", "1").count();
+//                AppConfig.badge = new BadgeView(this, alarmLinearLayout);
+//                if (count > 0) {
+//                    //显示气泡
+//                    AppConfig.badge.setText(count + "");
+//                    AppConfig.badge.setBadgeMargin(0);
+//                    AppConfig.badge.show();
+//                }
+//            }
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

@@ -85,7 +85,7 @@ public class UpdateSexActivity extends BaseActivity implements View.OnClickListe
 
     private void update(String type) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("carId", AppConfig.userInfoBean.getCarId() + "");
+//        map.put("carId", AppConfig.userInfoBean.getCarId() + "");
         map.put("userId", AppConfig.userInfoBean.getUserId());
         map.put("sex", type);
         RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getUpdateUserUrl(), map);

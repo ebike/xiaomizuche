@@ -142,17 +142,17 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
         //每天调一次半月的统计数据
         String isUsedDate = PreferencesUtil.getPrefString(getActivity(), AppConfig.IS_USED_DATE, "");
         String isUsedCarId = PreferencesUtil.getPrefString(getActivity(), AppConfig.IS_USED_CARID, "");
-        if (!(isUsedCarId.equals(AppConfig.userInfoBean.getCarId() + "") && isUsedDate.equals(CommonUtils.getCurrentDateString(null)))) {
-            getSomeDayData();
-        }
-        //查询数据库中统计数据
-        try {
-            if (dayDataBeans == null || dayDataBeans.size() == 0) {
-                dayDataBeans = XUtil.db.selector(DayDataBean.class).where("carId", "=", AppConfig.userInfoBean.getCarId()).orderBy("date", false).findAll();
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+//        if (!(isUsedCarId.equals(AppConfig.userInfoBean.getCarId() + "") && isUsedDate.equals(CommonUtils.getCurrentDateString(null)))) {
+//            getSomeDayData();
+//        }
+//        //查询数据库中统计数据
+//        try {
+//            if (dayDataBeans == null || dayDataBeans.size() == 0) {
+//                dayDataBeans = XUtil.db.selector(DayDataBean.class).where("carId", "=", AppConfig.userInfoBean.getCarId()).orderBy("date", false).findAll();
+//            }
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
         //请求今日统计数据
         RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getDayDataUrl(CommonUtils.DateToString(new Date(), "yyyy-MM-dd")));
         DHttpUtils.get_String((MainActivity) getActivity(), true, params, new DCommonCallback<String>() {
@@ -218,7 +218,7 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
                         for (DayDataBean dataBean : dayDataBeans) {
                             XUtil.db.save(dataBean);
                         }
-                        PreferencesUtil.setPrefString(getActivity(), AppConfig.IS_USED_CARID, AppConfig.userInfoBean.getCarId() + "");
+//                        PreferencesUtil.setPrefString(getActivity(), AppConfig.IS_USED_CARID, AppConfig.userInfoBean.getCarId() + "");
                         PreferencesUtil.setPrefString(getActivity(), AppConfig.IS_USED_DATE, CommonUtils.getCurrentDateString(null));
                     } else {
                         showShortText(bean.getErrmsg());

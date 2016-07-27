@@ -286,7 +286,7 @@ public class CarInformationActivity extends BaseActivity implements RowLabelValu
             //压缩后的图片文件
             File file = new File(AppConfig.compressedImage + imageItem.picName);
             List<SendParamsBean> sendParamsBeans = new ArrayList<SendParamsBean>();
-            sendParamsBeans.add(new SendParamsBean("carId", AppConfig.userInfoBean.getCarId() + "", false));
+//            sendParamsBeans.add(new SendParamsBean("carId", AppConfig.userInfoBean.getCarId() + "", false));
             sendParamsBeans.add(new SendParamsBean("carPic", file, true));
             RequestParams params = DRequestParamsUtils.getRequestParamsHasFile_Header(HttpConstants.getUpdateCarUrl(), sendParamsBeans);
             DHttpUtils.post_String(this, true, params, new DCommonCallback<String>() {

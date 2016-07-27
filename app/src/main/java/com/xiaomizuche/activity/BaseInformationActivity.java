@@ -17,7 +17,6 @@ import com.xiaomizuche.db.ProvinceInfoDao;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
-import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.view.RowLabelValueView;
 import com.xiaomizuche.view.wheel.AddressThreeWheelViewDialog;
 
@@ -79,7 +78,7 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
     @Override
     public void init() {
         if (userInfoBean != null) {
-            imeiRowLabelValueView.setValue(userInfoBean.getImei() + "");
+//            imeiRowLabelValueView.setValue(userInfoBean.getImei() + "");
             nameRowLabelValueView.setValue(userInfoBean.getUserName());
             if (userInfoBean.getSex() == 0) {
                 sexRowLabelValueView.setValue("男");
