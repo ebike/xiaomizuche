@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:padding="16dp"
         android:src="@mipmap/icon_left_arrow" />
 
@@ -34,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:src="@mipmap/icon_login_name" />
+            android:src="@mipmap/icon_id" />
 
         <EditText
             android:id="@+id/et_loginName"
@@ -71,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:src="@mipmap/icon_login_password" />
+            android:src="@mipmap/icon_pass" />
 
         <TextView
             android:id="@+id/tv_forget_password"

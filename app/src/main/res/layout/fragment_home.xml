@@ -1,7 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <com.xiaomizuche.view.TopBarView
+        android:id="@+id/top_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:center_text="小米租车"
+        app:has_center="true"
+        app:has_right="true"
+        app:has_right_clickable="true"
+        app:right_text="登录" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+    <View style="@style/base_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_manage_card"
+            style="@style/gray3_16"
+            android:layout_weight="1"
+            android:drawablePadding="18dp"
+            android:drawableTop="@mipmap/bg_manage_card"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="32dp"
+            android:text="办租车卡" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="32dp"
+            android:background="@color/main_line" />
+
+        <TextView
+            style="@style/gray3_16"
+            android:layout_weight="1"
+            android:drawablePadding="18dp"
+            android:drawableTop="@mipmap/bg_hire_car"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="32dp"
+            android:text="申请用车" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="32dp"
+            android:background="@color/main_line" />
+
+        <TextView
+            style="@style/gray3_16"
+            android:layout_weight="1"
+            android:drawablePadding="18dp"
+            android:drawableTop="@mipmap/bg_back_car"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="32dp"
+            android:text="还车" />
+    </LinearLayout>
 
 </LinearLayout>

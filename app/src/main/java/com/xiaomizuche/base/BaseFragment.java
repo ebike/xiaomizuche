@@ -12,6 +12,8 @@ public abstract class BaseFragment extends Fragment {
     protected boolean isVisible;
     //是否已被加载过一次，第二次就不再去请求数据了
     public boolean hasLoadedOnce;
+    //是否初始化完成
+    protected boolean isPrepared;
 
     @Override
     public void onStart() {

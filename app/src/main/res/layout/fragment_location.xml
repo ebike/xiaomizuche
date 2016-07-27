@@ -13,7 +13,7 @@
         app:has_center="true"
         app:has_left="true"
         app:has_left_clickable="true"
-        app:left_icon="@mipmap/icon_title_user" />
+        app:left_icon="@mipmap/icon_left_arrow" />
 
     <FrameLayout
         android:layout_width="match_parent"

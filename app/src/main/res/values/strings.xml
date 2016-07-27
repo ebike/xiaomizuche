@@ -10,7 +10,7 @@
     <string name="login">登录</string>
     <string name="password">密码</string>
     <string name="register">注册</string>
-    <string name="register_action">点击会员</string>
+    <string name="register_action">注册会员</string>
     <string name="book_install_action">预约安装</string>
     <string name="forget_password">忘记密码</string>
     <string name="location">卫星定位</string>

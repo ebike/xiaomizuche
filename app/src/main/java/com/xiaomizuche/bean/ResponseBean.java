@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * 响应状态信息
- * Created by jimmy on 2015/07/12.
  */
 public class ResponseBean<T> implements Serializable {
 

@@ -27,6 +27,11 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="gray3_16" parent="@style/style_base_w">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/gray_3</item>
+    </style>
+
     <style name="white_18" parent="@style/style_base_w">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/white</item>
@@ -55,6 +60,11 @@
     <style name="black_14" parent="@style/style_base_w">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="orange_18" parent="@style/style_base_w">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/main_tone</item>
     </style>
 
     <style name="orange_16" parent="@style/style_base_w">

@@ -27,8 +27,10 @@ import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
+import com.xiaomizuche.utils.SPUtils;
 
 import org.xutils.http.RequestParams;
+import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
@@ -132,14 +134,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 loginName = loginNameET.getText().toString().trim();
                 password = passwordET.getText().toString().trim();
                 if (CommonUtils.strIsEmpty(loginName)) {
-                    showShortText("请输入设备编号/车牌号码");
+                    showShortText("请输入手机号码/租车卡号");
                     return;
                 } else if (CommonUtils.strIsEmpty(password)) {
                     showShortText("请输入密码");
                     return;
                 }
                 RequestParams params = new RequestParams(HttpConstants.getLoginUrl(loginName, CommonUtils.MD5(password)));
-                DHttpUtils.get_String(LoginActivity.this, false, params, new DCommonCallback<String>() {
+                DHttpUtils.post_String(LoginActivity.this, false, params, new DCommonCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
@@ -147,12 +149,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         if (responseBean.getCode() == 1) {
                             //保存数据信息
                             AppConfig.userInfoBean = responseBean.getData();
-                            preferencesUtil.setPrefString(LoginActivity.this, AppConfig.LOGIN_NAME, loginName);
-                            preferencesUtil.setPrefString(LoginActivity.this, AppConfig.PASSWORD, CommonUtils.MD5(password));
+                            SPUtils.put(LoginActivity.this, AppConfig.LOGIN_NAME, loginName);
+                            SPUtils.put(LoginActivity.this, AppConfig.PASSWORD, CommonUtils.MD5(password));
                             //注册极光推送别名
                             setAlias();
-                            //进入首页
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             LoginActivity.this.finish();
                         } else {
                             showShortText(responseBean.getErrmsg());
@@ -196,20 +196,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         String loginName = loginNameET.getText().toString().trim();
         String password = passwordET.getText().toString().trim();
         if (!CommonUtils.strIsEmpty(loginName)) {
-            loginNameIV.setImageResource(R.mipmap.icon_login_name_focus);
-            loginNameLine.setBackgroundColor(getResources().getColor(R.color.blue));
-            loginNameET.setTextColor(getResources().getColor(R.color.blue));
+            loginNameIV.setImageResource(R.mipmap.icon_id_active);
+            loginNameLine.setBackgroundColor(getResources().getColor(R.color.main_tone));
+            loginNameET.setTextColor(getResources().getColor(R.color.main_tone));
         } else {
-            loginNameIV.setImageResource(R.mipmap.icon_login_name);
-            loginNameLine.setBackgroundColor(getResources().getColor(R.color.gray_2));
+            loginNameIV.setImageResource(R.mipmap.icon_id);
+            loginNameLine.setBackgroundColor(getResources().getColor(R.color.font_gray));
         }
         if (!CommonUtils.strIsEmpty(password)) {
-            passwordIV.setImageResource(R.mipmap.icon_login_password_focus);
-            passwordLine.setBackgroundColor(getResources().getColor(R.color.blue));
-            passwordET.setTextColor(getResources().getColor(R.color.blue));
+            passwordIV.setImageResource(R.mipmap.icon_pass_active);
+            passwordLine.setBackgroundColor(getResources().getColor(R.color.main_tone));
+            passwordET.setTextColor(getResources().getColor(R.color.main_tone));
         } else {
-            passwordIV.setImageResource(R.mipmap.icon_login_password);
-            passwordLine.setBackgroundColor(getResources().getColor(R.color.gray_2));
+            passwordIV.setImageResource(R.mipmap.icon_pass);
+            passwordLine.setBackgroundColor(getResources().getColor(R.color.font_gray));
         }
+    }
+
+    @Event(value = R.id.iv_back)
+    private void back(View v) {
+        finish();
     }
 }

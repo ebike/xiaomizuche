@@ -18,7 +18,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 /**
- * Created by jimmy on 15/12/4.
+ * 头部标题
  */
 public class TopBarView extends RelativeLayout {
     private Context context;

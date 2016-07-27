@@ -79,10 +79,7 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
     @Override
     public void init() {
         if (userInfoBean != null) {
-            equipmentSerialNumberRowLabelValueView.setValue(userInfoBean.getCarId() + "");
             imeiRowLabelValueView.setValue(userInfoBean.getImei() + "");
-            dataCardRowLabelValueView.setValue(userInfoBean.getTelNum());
-            openDateRowLabelValueView.setValue(userInfoBean.getActiveDate());
             nameRowLabelValueView.setValue(userInfoBean.getUserName());
             if (userInfoBean.getSex() == 0) {
                 sexRowLabelValueView.setValue("男");
@@ -90,15 +87,8 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
                 sexRowLabelValueView.setValue("女");
             }
             contactPhoneRowLabelValueView.setValue(userInfoBean.getPhone());
-            workPhoneRowLabelValueView.setValue(userInfoBean.getWorkPhone());
             areaRowLabelValueView.setValue(userInfoBean.getProvince() + "-" + userInfoBean.getCity() + "-" + userInfoBean.getArea());
             addressRowLabelValueView.setValue(userInfoBean.getAddress());
-            if(!CommonUtils.strIsEmpty(userInfoBean.getOrgName())){
-                belongsToUnitRowLabelValueView.setVisibility(View.VISIBLE);
-                belongsToUnitRowLabelValueView.setValue(userInfoBean.getOrgName());
-            }else{
-                belongsToUnitRowLabelValueView.setVisibility(View.GONE);
-            }
         }
         dialog = new AddressThreeWheelViewDialog(this);
         provinceDao = new ProvinceInfoDao(this);
@@ -163,7 +153,6 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
                 intent = new Intent(this, UpdateTextValueActivity.class);
                 intent.putExtra("type", 1);
                 intent.putExtra("fieldName_CH", getString(R.string.work_phone));
-                intent.putExtra("fieldValue", userInfoBean.getWorkPhone());
                 intent.putExtra("fieldName", "workPhone");
                 startActivity(intent);
                 break;
@@ -177,7 +166,6 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
                     @Override
                     public void doAction(LocationJson root, LocationJson child, LocationJson child2) {
                         Map<String, String> map = new HashMap<String, String>();
-                        map.put("carId", AppConfig.userInfoBean.getCarId() + "");
                         map.put("userId", AppConfig.userInfoBean.getUserId());
                         map.put("province", root.getName());
                         map.put("city", child.getName());

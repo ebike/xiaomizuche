@@ -3,152 +3,142 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.xiaomizuche.view.TopBarView
-        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         app:back_is_finish="true"
-        app:center_text="@string/register"
+        app:center_text="注册会员"
         app:has_center="true"
         app:has_left="true"
         app:has_left_clickable="true"
-        app:has_right="true"
-        app:has_right_clickable="true"
-        app:left_icon="@mipmap/back_icon"
-        app:left_text="@string/login"
-        app:right_text="@string/submit" />
+        app:left_icon="@mipmap/icon_left_arrow" />
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="32dp">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/iv_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/icon_phone" />
+
+        <TextView
+            android:id="@+id/tv_send_validatecode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/iv_phone"
+            android:layout_alignParentRight="true"
+            android:text="获取验证码" />
+
+        <EditText
+            android:id="@+id/et_phone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_phone"
+            android:layout_marginLeft="8dp"
+            android:layout_toLeftOf="@id/tv_send_validatecode"
+            android:layout_toRightOf="@id/iv_phone"
+            android:background="@null"
+            android:hint="请输入手机号码"
+            android:textColorHint="@color/gray_1"
+            android:textSize="14sp" />
 
-            <com.xiaomizuche.view.RowLabelEditView
-                android:id="@+id/rlev_imei"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:row_label_edit_bottom_line="2"
-                app:row_label_edit_hint="请输入IMEI后八位"
-                app:row_label_edit_label="@string/imei"
-                app:row_label_edit_top_line="1" />
+        <View
+            android:id="@+id/v_line_phone"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/iv_phone"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_2" />
+    </RelativeLayout>
 
-            <com.xiaomizuche.view.RowLabelValueView
-                android:id="@+id/rlvv_equipment_serial_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:row_label_value_bottom_line="2"
-                app:row_label_value_label="@string/equipment_serial_number1" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="16dp">
 
-            <com.xiaomizuche.view.RowLabelEditView
-                android:id="@+id/rlev_information_id_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:row_label_edit_bottom_line="1"
-                app:row_label_edit_hint="@string/app_require_input"
-                app:row_label_edit_label="@string/information_id_card" />
+        <ImageView
+            android:id="@+id/iv_validatecode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/icon_code" />
 
-            <com.xiaomizuche.view.RowLabelEditView
-                android:id="@+id/rlev_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:row_label_edit_bottom_line="2"
-                app:row_label_edit_hint="@string/app_require_input"
-                app:row_label_edit_label="@string/name"
-                app:row_label_edit_top_line="1" />
+        <EditText
+            android:id="@+id/et_validatecode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_validatecode"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/iv_validatecode"
+            android:background="@null"
+            android:hint="输入收到的验证码"
+            android:textColorHint="@color/gray_1"
+            android:textSize="14sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
+        <View
+            android:id="@+id/v_line_validatecode"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/iv_validatecode"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_2" />
+    </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="8dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:text="@string/sex"
-                        android:textColor="@color/gray_3"
-                        android:textSize="16sp" />
+        <ImageView
+            android:id="@+id/iv_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/icon_pass" />
 
-                    <ToggleButton
-                        android:id="@+id/tb_sex"
-                        android:layout_width="48dp"
-                        android:layout_height="24dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/toggle_sex"
-                        android:text=""
-                        android:textOff=""
-                        android:textOn="" />
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/iv_password"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/iv_password"
+            android:background="@null"
+            android:hint="设置密码(6-16位字母或数字)"
+            android:textColorHint="@color/gray_1"
+            android:textSize="14sp" />
 
-                </RelativeLayout>
+        <View
+            android:id="@+id/v_line_password"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/iv_password"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_2" />
+    </RelativeLayout>
 
-                <View
-                    style="@style/base_line"
-                    android:layout_marginLeft="16dp" />
-            </LinearLayout>
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/login_button"
+        android:text="下一步"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
-            <com.xiaomizuche.view.RowLabelEditView
-                android:id="@+id/rlev_contact_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:row_label_edit_bottom_line="2"
-                app:row_label_edit_hint="@string/app_require_input"
-                app:row_label_edit_label="@string/contact_phone" />
-
-            <com.xiaomizuche.view.RowLabelValueView
-                android:id="@+id/rlvv_region"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:row_label_value_bottom_line="2"
-                app:row_label_value_has_right_arrow="true"
-                app:row_label_value_label="@string/region"
-                app:row_label_value_value="@string/app_require_check" />
-
-            <com.xiaomizuche.view.RowLabelEditView
-                android:id="@+id/rlev_detailed_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:row_label_edit_bottom_line="1"
-                app:row_label_edit_hint="@string/app_require_input"
-                app:row_label_edit_label="@string/detailed_address" />
-
-            <com.xiaomizuche.view.RowLabelEditView
-                android:id="@+id/rlev_brand"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:row_label_edit_bottom_line="2"
-                app:row_label_edit_label="@string/brand"
-                app:row_label_edit_top_line="1" />
-
-            <com.xiaomizuche.view.RowLabelEditView
-                android:id="@+id/rlev_models"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:row_label_edit_bottom_line="1"
-                app:row_label_edit_label="@string/models" />
-        </LinearLayout>
-    </ScrollView>
 </LinearLayout>
