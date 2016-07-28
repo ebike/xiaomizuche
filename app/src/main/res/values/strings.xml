@@ -86,4 +86,6 @@
     <string name="shop">商城</string>
     <string name="my">我的</string>
 
+    <string name="digits_password">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLIMNOPQRSTUVWXYZ</string>
+    <string name="digits_number">0123456789</string>
 </resources>

@@ -11,6 +11,7 @@ import com.xiaomizuche.utils.CommonUtils;
 import org.xutils.x;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.smssdk.SMSSDK;
 
 /**
  * 启动应用是执行的类
@@ -39,5 +40,7 @@ public class BaseApplication extends Application {
         strategy.setAppChannel("xiaomizuche");     //设置渠道
         strategy.setAppVersion(CommonUtils.getVersionName(getApplicationContext()));      //App的版本
         CrashReport.initCrashReport(this, "900038260", true, strategy);  //初始化bugly SDK
+        //短信
+        SMSSDK.initSDK(this, "154fec5eb5915", "dc13c624e81666871bc45718098f282d");
     }
 }

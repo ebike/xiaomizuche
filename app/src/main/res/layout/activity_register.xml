@@ -53,7 +53,9 @@
             android:layout_toLeftOf="@id/tv_send_validatecode"
             android:layout_toRightOf="@id/iv_phone"
             android:background="@null"
+            android:digits="@string/digits_number"
             android:hint="请输入手机号码"
+            android:inputType="phone"
             android:textColorHint="@color/font_gray"
             android:textSize="14sp" />
 
@@ -88,7 +90,9 @@
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/iv_validatecode"
             android:background="@null"
+            android:digits="@string/digits_number"
             android:hint="输入收到的验证码"
+            android:inputType="number"
             android:textColorHint="@color/font_gray"
             android:textSize="14sp" />
 
@@ -123,7 +127,9 @@
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@id/iv_password"
             android:background="@null"
+            android:digits="@string/digits_password"
             android:hint="设置密码(6-16位字母或数字)"
+            android:inputType="textPassword"
             android:textColorHint="@color/font_gray"
             android:textSize="14sp" />
 

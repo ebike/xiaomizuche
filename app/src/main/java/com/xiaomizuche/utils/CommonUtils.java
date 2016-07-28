@@ -55,6 +55,28 @@ public class CommonUtils {
     private static PopupWindow popupWindow;
 
     /**
+     * 手机号码校验 11位以1开头
+     *
+     * @param mobileNumber
+     * @return
+     */
+    public static boolean isPhoneNumber(String mobileNumber) {
+        if (!strIsEmpty(mobileNumber)) {
+            if (mobileNumber.startsWith("+86"))
+                mobileNumber = mobileNumber.replace("+86", "");
+        }
+        boolean flag = false;
+        try {
+            if (mobileNumber.startsWith("1") && mobileNumber.length() == 11) {
+                flag = true;
+            }
+        } catch (Exception e) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    /**
      * 字符串为空的判断
      */
     public static Boolean strIsEmpty(String str) {
@@ -329,11 +351,11 @@ public class CommonUtils {
                 .setContentTitle(title) //标题
                 .setContentText(content)         //正文
                 .setNumber(1)                       //设置信息条数
-                        //.setContentInfo("3")        //作用同上，设置信息的条数
-                        // .setLargeIcon(smallicon)           //largeicon，
+                //.setContentInfo("3")        //作用同上，设置信息的条数
+                // .setLargeIcon(smallicon)           //largeicon，
 
                 .setDefaults(noticeType)//设置声音，此为默认声音
-                        //.setVibrate(vT) //设置震动，此震动数组为：long vT[]={300,100,300,100}; 还可以设置灯光.setLights(argb, onMs, offMs)
+                //.setVibrate(vT) //设置震动，此震动数组为：long vT[]={300,100,300,100}; 还可以设置灯光.setLights(argb, onMs, offMs)
                 .setOngoing(false)      //true使notification变为ongoing，用户不能手动清除，类似QQ,false或者不设置则为普通的通知
                 .setAutoCancel(true);//点击之后自动消失
         Intent resultIntent = new Intent(context, clazz);
@@ -806,16 +828,18 @@ public class CommonUtils {
      * 即将所有的数字、字母及标点全部转为全角字符，使它们与汉字同占两个字节，
      * 这样就可以避免由于占位导致的排版混乱问题了。
      * 半角转为全角的代码如下，只需调用即可。
+     *
      * @param input
      * @return
      */
     public static String ToDBC(String input) {
         char[] c = input.toCharArray();
-        for (int i = 0; i< c.length; i++) {
+        for (int i = 0; i < c.length; i++) {
             if (c[i] == 12288) {
                 c[i] = (char) 32;
                 continue;
-            }if (c[i]> 65280&& c[i]< 65375)
+            }
+            if (c[i] > 65280 && c[i] < 65375)
                 c[i] = (char) (c[i] - 65248);
         }
         return new String(c);
@@ -823,6 +847,7 @@ public class CommonUtils {
 
     /**
      * 获取包名称
+     *
      * @param context
      * @return
      */
@@ -834,7 +859,7 @@ public class CommonUtils {
             versionName = packInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return versionName;
