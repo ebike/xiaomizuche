@@ -21,6 +21,15 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //注册
+    public static String getRegUser(String phone, String password) {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/regUser.do");
+        sb.append("?phone=").append(phone);
+        sb.append("&password=").append(password);
+        return sb.toString();
+    }
+
     //获取用户资料接口
     public static String getUserInfo() {
         StringBuffer sb = new StringBuffer(baseUrl);

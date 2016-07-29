@@ -7,13 +7,22 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
 import com.xiaomizuche.base.BaseActivity;
+import com.xiaomizuche.bean.ResponseBean;
+import com.xiaomizuche.callback.DCommonCallback;
+import com.xiaomizuche.http.DHttpUtils;
+import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.utils.T;
 
+import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+
+import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -64,6 +73,10 @@ public class RegisterActivity extends BaseActivity {
                     }
                 } else {
                     ((Throwable) data).printStackTrace();
+                    Message message = new Message();
+                    message.what = SMSSDK.RESULT_ERROR;
+                    message.obj = ((Throwable) data).getMessage();
+                    dealHandler.sendMessageDelayed(message, 0);
                 }
             }
         };
@@ -73,8 +86,30 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
+                    case SMSSDK.RESULT_ERROR:
+                        HashMap map = new Gson().fromJson(msg.obj + "", HashMap.class);
+                        if ("467".equals(map.get("status") + "")) {
+                            T.showShort(RegisterActivity.this, "验证码不正确");
+                        } else {
+                            T.showShort(RegisterActivity.this, map.get("detail") + "");
+                        }
+                        break;
                     case SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE:
                         T.showShort(RegisterActivity.this, "验证码验证成功");
+                        RequestParams params = new RequestParams(HttpConstants.getRegUser(phone, password));
+                        DHttpUtils.post_String(RegisterActivity.this, true, params, new DCommonCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                ResponseBean bean = new Gson().fromJson(result, new TypeToken<ResponseBean>() {
+                                }.getType());
+                                if (bean.getCode() == 1) {
+//                                    startActivity(new Intent());
+                                    RegisterActivity.this.finish();
+                                } else {
+                                    showShortText(bean.getErrmsg());
+                                }
+                            }
+                        });
                         break;
                     case SMSSDK.EVENT_GET_VERIFICATION_CODE:
                         T.showShort(RegisterActivity.this, "验证码已发送至手机");
@@ -149,5 +184,8 @@ public class RegisterActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         SMSSDK.unregisterEventHandler(eh);
+        if (handler != null) {
+            handler.removeCallbacks(runnable);
+        }
     }
 }

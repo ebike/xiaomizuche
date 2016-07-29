@@ -229,8 +229,9 @@
         <activity
             android:name=".activity.PhotoSingleSelectionActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.HomeActivity"></activity>
-        <activity android:name=".activity.ManageCardActivity"></activity>
+        <activity android:name=".activity.HomeActivity" />
+        <activity android:name=".activity.ManageCardActivity" />
+        <activity android:name=".activity.AddUserInfoActivity"></activity>
     </application>
 
 </manifest>
