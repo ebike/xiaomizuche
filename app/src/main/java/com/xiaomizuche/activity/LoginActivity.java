@@ -25,6 +25,7 @@ import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.callback.DSingleDialogCallback;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.http.DHttpUtils;
+import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.utils.SPUtils;
@@ -32,6 +33,9 @@ import com.xiaomizuche.utils.SPUtils;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     @ViewInject(R.id.rl_rootView)
@@ -140,7 +144,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     showShortText("请输入密码");
                     return;
                 }
-                RequestParams params = new RequestParams(HttpConstants.getLoginUrl(loginName, CommonUtils.MD5(password)));
+                Map<String, String> map = new HashMap<>();
+                map.put("loginName", loginName);
+                map.put("password", CommonUtils.MD5(password));
+                map.put("clientId", AppConfig.imei);
+                map.put("platform", "android:" + android.os.Build.VERSION.RELEASE);
+                RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getLoginUrl(), map);
                 DHttpUtils.post_String(LoginActivity.this, false, params, new DCommonCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
@@ -161,7 +170,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 });
                 break;
             case R.id.tv_register://注册帐号
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+//                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this, AddUserInfoActivity.class));
                 break;
             case R.id.tv_forget_password://忘记密码
                 CommonUtils.showCustomDialog3(this, "呼叫", "取消", "", "0531-67805000", new DSingleDialogCallback() {

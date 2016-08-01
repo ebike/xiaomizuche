@@ -11,22 +11,23 @@ public class HttpConstants {
     public static String baseUrl = "http://www.gnets.cn:8088/xmzc_api/app/";
 
     //登录
-    public static String getLoginUrl(String loginName, String password) {
+    public static String getLoginUrl() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("checkLogin.do");
-        sb.append("?loginName=").append(loginName);
-        sb.append("&password=").append(password);
-        sb.append("&clientId=").append(AppConfig.imei);
-        sb.append("&platform=android:").append(android.os.Build.VERSION.RELEASE);
         return sb.toString();
     }
 
     //注册
-    public static String getRegUser(String phone, String password) {
+    public static String getRegUser() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("user/regUser.do");
-        sb.append("?phone=").append(phone);
-        sb.append("&password=").append(password);
+        return sb.toString();
+    }
+
+    //完善资料
+    public static String perfectUserData(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/perfectUserData.do");
         return sb.toString();
     }
 

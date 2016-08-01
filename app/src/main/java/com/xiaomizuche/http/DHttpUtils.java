@@ -1,5 +1,6 @@
 package com.xiaomizuche.http;
 
+import android.util.Log;
 import android.view.Gravity;
 
 import com.google.gson.Gson;
@@ -30,6 +31,8 @@ public class DHttpUtils {
      * @param ex
      */
     public static void dealException(BaseActivity activity, Throwable ex) {
+        Log.e("http_error", ex.getMessage());
+
         String exception = "";
         if (!NetworkUtils.isNetworkAvailable(activity)) {
             exception = activity.getResources().getString(R.string.no_network);

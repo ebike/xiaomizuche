@@ -1,5 +1,6 @@
 package com.xiaomizuche.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.http.DHttpUtils;
+import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.utils.T;
@@ -23,6 +25,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -87,23 +90,28 @@ public class RegisterActivity extends BaseActivity {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case SMSSDK.RESULT_ERROR:
-                        HashMap map = new Gson().fromJson(msg.obj + "", HashMap.class);
-                        if ("467".equals(map.get("status") + "")) {
-                            T.showShort(RegisterActivity.this, "验证码不正确");
-                        } else {
-                            T.showShort(RegisterActivity.this, map.get("detail") + "");
+                        try {
+                            HashMap map = new Gson().fromJson(msg.obj + "", HashMap.class);
+                            if ("467".equals(map.get("status") + "")) {
+                                T.showShort(RegisterActivity.this, "验证码不正确");
+                            } else {
+                                T.showShort(RegisterActivity.this, map.get("detail") + "");
+                            }
+                        } catch (IllegalStateException ex) {
                         }
                         break;
                     case SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE:
-                        T.showShort(RegisterActivity.this, "验证码验证成功");
-                        RequestParams params = new RequestParams(HttpConstants.getRegUser(phone, password));
+                        Map<String, String> paramsMap = new HashMap<>();
+                        paramsMap.put("phone", phone);
+                        paramsMap.put("password", password);
+                        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getRegUser(), paramsMap);
                         DHttpUtils.post_String(RegisterActivity.this, true, params, new DCommonCallback<String>() {
                             @Override
                             public void onSuccess(String result) {
                                 ResponseBean bean = new Gson().fromJson(result, new TypeToken<ResponseBean>() {
                                 }.getType());
                                 if (bean.getCode() == 1) {
-//                                    startActivity(new Intent());
+                                    startActivity(new Intent(RegisterActivity.this, AddUserInfoActivity.class));
                                     RegisterActivity.this.finish();
                                 } else {
                                     showShortText(bean.getErrmsg());

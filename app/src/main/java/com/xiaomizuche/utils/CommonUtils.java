@@ -503,6 +503,15 @@ public class CommonUtils {
         builder.create().show();
     }
 
+    public static CustomDialog showCustomDialog1(Context ctx, String title, View view) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(ctx);
+        builder.setTitle(title);
+        builder.setContentView(view);
+        CustomDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
+    }
+
     /**
      * IOS风格
      * 固定按钮文字的单选对话框
