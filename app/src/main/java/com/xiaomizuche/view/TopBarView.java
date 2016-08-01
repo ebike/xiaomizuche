@@ -197,6 +197,16 @@ public class TopBarView extends RelativeLayout {
         }
     }
 
+    //去掉右边文字
+    public void setRightTextEnabled(boolean enabled) {
+        rightRelativeLayout.setEnabled(enabled);
+        if (enabled) {
+            rightTextView.setVisibility(View.VISIBLE);
+        } else {
+            rightTextView.setVisibility(View.GONE);
+        }
+    }
+
     //设置右边文字是否置灰
     public void setRightTextViewEnabled(boolean enabled) {
         rightRelativeLayout.setEnabled(enabled);

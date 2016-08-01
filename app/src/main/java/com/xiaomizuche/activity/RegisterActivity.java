@@ -13,11 +13,15 @@ import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.ResponseBean;
+import com.xiaomizuche.bean.SMSResult;
+import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.callback.DCommonCallback;
+import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
+import com.xiaomizuche.utils.SPUtils;
 import com.xiaomizuche.utils.T;
 
 import org.xutils.http.RequestParams;
@@ -29,6 +33,7 @@ import java.util.Map;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import de.greenrobot.event.EventBus;
 
 /**
  * 注册会员
@@ -91,11 +96,11 @@ public class RegisterActivity extends BaseActivity {
                 switch (msg.what) {
                     case SMSSDK.RESULT_ERROR:
                         try {
-                            HashMap map = new Gson().fromJson(msg.obj + "", HashMap.class);
-                            if ("467".equals(map.get("status") + "")) {
+                            SMSResult result = new Gson().fromJson(msg.obj + "", SMSResult.class);
+                            if (result.getStatus() == 467 || result.getStatus() == 468) {
                                 T.showShort(RegisterActivity.this, "验证码不正确");
                             } else {
-                                T.showShort(RegisterActivity.this, map.get("detail") + "");
+                                T.showShort(RegisterActivity.this, result.getDetail());
                             }
                         } catch (IllegalStateException ex) {
                         }
@@ -103,18 +108,27 @@ public class RegisterActivity extends BaseActivity {
                     case SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE:
                         Map<String, String> paramsMap = new HashMap<>();
                         paramsMap.put("phone", phone);
-                        paramsMap.put("password", password);
+                        paramsMap.put("password", CommonUtils.MD5(password));
+                        paramsMap.put("clientId", AppConfig.imei);
+                        paramsMap.put("platform", "android:" + android.os.Build.VERSION.RELEASE);
                         RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getRegUser(), paramsMap);
                         DHttpUtils.post_String(RegisterActivity.this, true, params, new DCommonCallback<String>() {
                             @Override
                             public void onSuccess(String result) {
-                                ResponseBean bean = new Gson().fromJson(result, new TypeToken<ResponseBean>() {
+                                ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
                                 }.getType());
-                                if (bean.getCode() == 1) {
+                                if (responseBean.getCode() == 1) {
+                                    //保存数据信息
+                                    AppConfig.userInfoBean = responseBean.getData();
+                                    SPUtils.put(RegisterActivity.this, AppConfig.LOGIN_NAME, phone);
+                                    SPUtils.put(RegisterActivity.this, AppConfig.PASSWORD, CommonUtils.MD5(password));
+                                    //注册极光推送别名
+                                    setAlias();
+                                    EventBus.getDefault().post(AppConfig.userInfoBean);
                                     startActivity(new Intent(RegisterActivity.this, AddUserInfoActivity.class));
                                     RegisterActivity.this.finish();
                                 } else {
-                                    showShortText(bean.getErrmsg());
+                                    showShortText(responseBean.getErrmsg());
                                 }
                             }
                         });

@@ -37,6 +37,8 @@ import org.xutils.view.annotation.ViewInject;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     @ViewInject(R.id.rl_rootView)
     RelativeLayout rootViewRL;
@@ -162,6 +164,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                             SPUtils.put(LoginActivity.this, AppConfig.PASSWORD, CommonUtils.MD5(password));
                             //注册极光推送别名
                             setAlias();
+                            EventBus.getDefault().post(AppConfig.userInfoBean);
                             LoginActivity.this.finish();
                         } else {
                             showShortText(responseBean.getErrmsg());
@@ -170,8 +173,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 });
                 break;
             case R.id.tv_register://注册帐号
-//                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                startActivity(new Intent(LoginActivity.this, AddUserInfoActivity.class));
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
                 break;
             case R.id.tv_forget_password://忘记密码
                 CommonUtils.showCustomDialog3(this, "呼叫", "取消", "", "0531-67805000", new DSingleDialogCallback() {

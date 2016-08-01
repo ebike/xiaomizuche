@@ -5,18 +5,24 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
+import com.xiaomizuche.adapter.SchoolAdapter;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.LocationJson;
 import com.xiaomizuche.bean.ResponseBean;
+import com.xiaomizuche.bean.SchoolBean;
+import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.callback.DCommonCallback;
+import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.db.ProvinceInfoDao;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
@@ -82,6 +88,9 @@ public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
     private String city;
     private String county;
 
+    private List<SchoolBean> schoolList;
+    private SchoolBean schoolBean;
+
     @Override
     public void loadXml() {
         setContentView(R.layout.activity_add_user_info);
@@ -111,6 +120,11 @@ public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
         chooseSex();
     }
 
+    @Event(value = R.id.ll_school)
+    private void school(View view) {
+        chooseSchool();
+    }
+
     @Event(value = R.id.ll_area)
     private void area(View view) {
         dialog.setData(mProvinceList);
@@ -121,6 +135,23 @@ public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
                 city = child.getName();
                 county = child2.getName();
                 areaView.setText(province + "-" + city + "-" + county);
+                Map<String, String> map = new HashMap<>();
+                map.put("province", province);
+                map.put("city", city);
+                map.put("area", county);
+                RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getSchools(), map);
+                DHttpUtils.post_String(AddUserInfoActivity.this, false, params, new DCommonCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        ResponseBean<List<SchoolBean>> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<List<SchoolBean>>>() {
+                        }.getType());
+                        if (responseBean.getCode() == 1) {
+                            schoolList = responseBean.getData();
+                        } else {
+                            showShortText(responseBean.getErrmsg());
+                        }
+                    }
+                });
             }
         });
     }
@@ -163,17 +194,30 @@ public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
             return;
         }
         Map<String, String> map = new HashMap<>();
-//        map.put("userId",);
+        map.put("userId", AppConfig.userInfoBean.getUserId());
+        map.put("userName", nameText.getText().toString().trim());
+        map.put("sex", sex);
+        map.put("idNum", idCardText.getText().toString().trim());
+        map.put("userType", userType);
+        map.put("province", province);
+        map.put("city", city);
+        map.put("area", county);
+        if (userType.equals("1")) {
+            map.put("schoolId", schoolBean.getId());
+        } else if (userType.equals("2")) {
+            map.put("address", addressText.getText().toString().trim());
+        }
         RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.perfectUserData(), map);
         DHttpUtils.post_String(this, true, params, new DCommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                ResponseBean bean = new Gson().fromJson(result, new TypeToken<ResponseBean>() {
+                ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
                 }.getType());
-                if (bean.getCode() == 1) {
+                if (responseBean.getCode() == 1) {
+                    AppConfig.userInfoBean = responseBean.getData();
                     AddUserInfoActivity.this.finish();
                 } else {
-                    showShortText(bean.getErrmsg());
+                    showShortText(responseBean.getErrmsg());
                 }
             }
         });
@@ -265,6 +309,25 @@ public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
                 userTypeView.setText("普通用户");
                 schoolLayout.setVisibility(View.GONE);
                 addressLayout.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void chooseSchool() {
+        View view = LayoutInflater.from(this).inflate(R.layout.view_school, null, false);
+        ListView listView = (ListView) view.findViewById(R.id.list_view);
+        SchoolAdapter adapter = new SchoolAdapter(this);
+        if (schoolList != null && schoolList.size() > 0) {
+            adapter.setList(schoolList);
+        }
+        listView.setAdapter(adapter);
+        final CustomDialog dialog = CommonUtils.showCustomDialog1(this, "选择学校", view);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialog.cancel();
+                schoolBean = (SchoolBean) parent.getItemAtPosition(position);
+                schoolView.setText(schoolBean.getName());
             }
         });
     }

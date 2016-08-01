@@ -10,11 +10,14 @@ import com.xiaomizuche.R;
 import com.xiaomizuche.activity.LoginActivity;
 import com.xiaomizuche.activity.ManageCardActivity;
 import com.xiaomizuche.base.BaseFragment;
+import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.view.TopBarView;
 
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 首页
@@ -24,13 +27,12 @@ public class HomeFragment extends BaseFragment {
     @ViewInject(R.id.top_bar_view)
     TopBarView topBarView;
 
-    private boolean isPrepared;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         x.view().inject(this, view);
         isPrepared = true;
+        EventBus.getDefault().register(this);
 
         topBarView.setRightCallback(new TopBarView.TopBarRightCallback() {
             @Override
@@ -49,5 +51,15 @@ public class HomeFragment extends BaseFragment {
     @Event(value = R.id.tv_manage_card)
     private void manageCard(View view) {
         startActivity(new Intent(getActivity(), ManageCardActivity.class));
+    }
+
+    public void onEvent(UserInfoBean bean) {
+        topBarView.setRightTextEnabled(false);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 }

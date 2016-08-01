@@ -31,6 +31,13 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //根据省市区获取学校接口
+    public static String getSchools(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/getSchools.do");
+        return sb.toString();
+    }
+
     //获取用户资料接口
     public static String getUserInfo() {
         StringBuffer sb = new StringBuffer(baseUrl);
