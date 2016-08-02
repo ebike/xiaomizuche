@@ -15,6 +15,7 @@ import com.xiaomizuche.bean.TabIndicator;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.fragment.HireCarFragment;
 import com.xiaomizuche.fragment.HomeFragment;
+import com.xiaomizuche.fragment.MyFragment;
 import com.xiaomizuche.fragment.ShopFragment;
 import com.xiaomizuche.utils.ViewPagerUtils;
 import com.xiaomizuche.view.NotSlideViewPager;
@@ -90,7 +91,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         fragmentList.add(new HomeFragment());
         fragmentList.add(new HireCarFragment());
         fragmentList.add(new ShopFragment());
-        fragmentList.add(new HomeFragment());
+        fragmentList.add(new MyFragment());
         viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), tabIndicatorList, fragmentList);
         viewPager.setAdapter(viewPagerFragmentAdapter);
     }

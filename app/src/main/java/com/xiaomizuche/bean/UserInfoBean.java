@@ -10,6 +10,7 @@ public class UserInfoBean implements Serializable{
     private String userId;
     private String userName;
     private int sex;
+    private String headPic;
     private String province;
     private String city;
     private String area;
@@ -144,5 +145,13 @@ public class UserInfoBean implements Serializable{
 
     public void setUserToken(String userToken) {
         this.userToken = userToken;
+    }
+
+    public String getHeadPic() {
+        return headPic;
+    }
+
+    public void setHeadPic(String headPic) {
+        this.headPic = headPic;
     }
 }

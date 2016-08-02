@@ -19,7 +19,6 @@ import org.xutils.x;
 /**
  * 横向的条目组件
  * 包含：图标、标题、右箭头、上下横线（0：无线；1：长线；2：短线）
- * Created by jimmy on 16/1/18.
  */
 public class RowEntryView extends RelativeLayout {
     private View rootView;
