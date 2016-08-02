@@ -173,7 +173,7 @@
         <!-- </>值来自开发者平台取得的AppKey -->
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="c124bc0546a8e463611877b1" />
+            android:value="7c7975ba2d3c765bc13a0344" />
 
         <activity
             android:name=".activity.SplashActivity"

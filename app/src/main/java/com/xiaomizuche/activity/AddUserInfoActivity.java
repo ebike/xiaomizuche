@@ -1,8 +1,6 @@
 package com.xiaomizuche.activity;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
+public class AddUserInfoActivity extends BaseActivity {
 
     @ViewInject(R.id.et_name)
     EditText nameText;
@@ -110,9 +108,7 @@ public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
 
     @Override
     public void setListener() {
-        nameText.addTextChangedListener(this);
-        idCardText.addTextChangedListener(this);
-        addressText.addTextChangedListener(this);
+
     }
 
     @Event(value = R.id.ll_sex)
@@ -226,41 +222,6 @@ public class AddUserInfoActivity extends BaseActivity implements TextWatcher {
     @Override
     public void setData() {
 
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-        name = nameText.getText().toString().trim();
-        idCard = idCardText.getText().toString().trim();
-        address = addressText.getText().toString().trim();
-        if (!CommonUtils.strIsEmpty(name)) {
-            nameLine.setBackgroundColor(getResources().getColor(R.color.main_tone));
-            nameText.setTextColor(getResources().getColor(R.color.main_tone));
-        } else {
-            nameLine.setBackgroundColor(getResources().getColor(R.color.font_gray));
-        }
-        if (!CommonUtils.strIsEmpty(idCard)) {
-            idCardLine.setBackgroundColor(getResources().getColor(R.color.main_tone));
-            idCardText.setTextColor(getResources().getColor(R.color.main_tone));
-        } else {
-            idCardLine.setBackgroundColor(getResources().getColor(R.color.font_gray));
-        }
-        if (!CommonUtils.strIsEmpty(address)) {
-            addressLine.setBackgroundColor(getResources().getColor(R.color.main_tone));
-            addressText.setTextColor(getResources().getColor(R.color.main_tone));
-        } else {
-            addressLine.setBackgroundColor(getResources().getColor(R.color.font_gray));
-        }
     }
 
     private void chooseSex() {

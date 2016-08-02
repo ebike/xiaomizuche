@@ -1,18 +1,14 @@
 package com.xiaomizuche.activity;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -24,6 +20,7 @@ import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.callback.DSingleDialogCallback;
 import com.xiaomizuche.constants.AppConfig;
+import com.xiaomizuche.event.FinishActivityEvent;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
@@ -40,8 +37,7 @@ import java.util.Map;
 import de.greenrobot.event.EventBus;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
-    @ViewInject(R.id.rl_rootView)
-    RelativeLayout rootViewRL;
+
     @ViewInject(R.id.iv_loginName)
     ImageView loginNameIV;
     @ViewInject(R.id.et_loginName)
@@ -62,11 +58,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     TextView registerTV;
     private String loginName;
     private String password;
-    private boolean isUpdate;
 
     @Override
     public void loadXml() {
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_login);
     }
 
@@ -77,7 +71,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void init() {
-        controlKeyboardLayout(rootViewRL, loginButton);
         if (CommonUtils.strIsEmpty(AppConfig.loginName)) {
             AppConfig.loginName = preferencesUtil.getPrefString(LoginActivity.this, AppConfig.LOGIN_NAME, "");
         }
@@ -96,41 +89,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void setData() {
 
-    }
-
-    /**
-     * 处理软键盘遮挡登陆按钮
-     *
-     * @param root         最外层布局，需要调整的布局
-     * @param scrollToView 被键盘遮挡的scrollToView，滚动root,使scrollToView在root可视区域的底部
-     */
-    private void controlKeyboardLayout(final View root, final View scrollToView) {
-        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (isUpdate) {
-                    isUpdate = false;
-                } else {
-                    Rect rect = new Rect();
-                    //获取root在窗体的可视区域
-                    root.getWindowVisibleDisplayFrame(rect);
-                    //获取root在窗体的不可视区域高度(被其他View遮挡的区域高度)
-                    int rootInvisibleHeight = root.getRootView().getHeight() - rect.bottom;
-                    //若不可视区域高度大于100，则键盘显示
-                    if (rootInvisibleHeight > 100) {
-                        int[] location = new int[2];
-                        //获取scrollToView在窗体的坐标
-                        scrollToView.getLocationInWindow(location);
-                        //计算root滚动高度，使scrollToView在可见区域
-                        int srollHeight = (location[1] + scrollToView.getHeight()) - rect.bottom;
-                        root.scrollTo(0, srollHeight);
-                    } else {
-                        //键盘隐藏
-                        root.scrollTo(0, 0);
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -152,7 +110,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 map.put("clientId", AppConfig.imei);
                 map.put("platform", "android:" + android.os.Build.VERSION.RELEASE);
                 RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getLoginUrl(), map);
-                DHttpUtils.post_String(LoginActivity.this, false, params, new DCommonCallback<String>() {
+                DHttpUtils.post_String(LoginActivity.this, true, params, new DCommonCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
@@ -204,7 +162,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void afterTextChanged(Editable s) {
-        isUpdate = true;
         String loginName = loginNameET.getText().toString().trim();
         String password = passwordET.getText().toString().trim();
         if (!CommonUtils.strIsEmpty(loginName)) {
@@ -228,5 +185,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Event(value = R.id.iv_back)
     private void back(View v) {
         finish();
+    }
+
+    public void onEvent(FinishActivityEvent event){
+        if(event.isFinish() && event.getTarget().equals(this.getClass().getSimpleName())){
+            finish();
+        }
     }
 }

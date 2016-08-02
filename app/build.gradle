@@ -24,11 +24,6 @@ android {
     }
 }
 
-repositories {
-    flatDir {
-        dirs 'libs' //放aar的目录地址
-    }
-}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -46,8 +41,6 @@ dependencies {
     compile files('libs/systembartint-1.0.4.jar')
     compile files('libs/bugly_1.1.2_release.jar')
     compile files('libs/slidingmenu.jar')
-    compile name: 'SMSSDK-2.1.1', ext: 'aar'
-    compile name: 'SMSSDKGUI-2.1.1', ext: 'aar'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'

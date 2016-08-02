@@ -25,7 +25,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginRight="16dp"
-            android:src="@mipmap/icon_about_app" />
+            android:src="@mipmap/icon_default_head" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -47,12 +47,12 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    style="@style/gray3_16" />
+                    style="@style/gray3_16"
+                    android:layout_marginRight="8dp" />
 
                 <TextView
                     android:id="@+id/tv_phone"
                     style="@style/gray6_14"
-                    android:layout_marginLeft="8dp"
                     android:singleLine="true" />
             </LinearLayout>
 
@@ -66,7 +66,7 @@
 
                 <TextView
                     style="@style/gray9_14"
-                    android:text="注册日期:" />
+                    android:text="注册日期：" />
 
                 <TextView
                     android:id="@+id/tv_date"
@@ -92,7 +92,7 @@
         app:row_entry_bottom_line="2"
         app:row_entry_can_click="true"
         app:row_entry_has_right_arrow="true"
-        app:row_entry_icon="@mipmap/icon_code"
+        app:row_entry_icon="@mipmap/icon_card"
         app:row_entry_text="租车卡" />
 
     <com.xiaomizuche.view.RowEntryView
@@ -102,7 +102,7 @@
         app:row_entry_bottom_line="2"
         app:row_entry_can_click="true"
         app:row_entry_has_right_arrow="true"
-        app:row_entry_icon="@mipmap/icon_code"
+        app:row_entry_icon="@mipmap/icon_service_terms"
         app:row_entry_text="服务条款" />
 
     <com.xiaomizuche.view.RowEntryView
@@ -112,7 +112,7 @@
         app:row_entry_bottom_line="2"
         app:row_entry_can_click="true"
         app:row_entry_has_right_arrow="true"
-        app:row_entry_icon="@mipmap/icon_code"
+        app:row_entry_icon="@mipmap/icon_my_phone"
         app:row_entry_text="联系客服" />
 
     <com.xiaomizuche.view.RowEntryView
@@ -122,7 +122,7 @@
         app:row_entry_bottom_line="1"
         app:row_entry_can_click="true"
         app:row_entry_has_right_arrow="true"
-        app:row_entry_icon="@mipmap/icon_code"
+        app:row_entry_icon="@mipmap/icon_about"
         app:row_entry_text="关于" />
 
     <LinearLayout
