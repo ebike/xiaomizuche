@@ -38,6 +38,32 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //退出账号
+    public static String getLogoutUrl() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("logout.do");
+        sb.append("?userId=").append(AppConfig.userInfoBean.getUserId());
+        return sb.toString();
+    }
+
+    //租车接口
+    public static String hireCar(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("car/hireCar.do");
+        return sb.toString();
+    }
+
+    //获取用户当前租车信息
+    public static String getUserCarRecord(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("car/getUserCarRecord.do");
+        sb.append("?userId=").append(AppConfig.userInfoBean.getUserId());
+        return sb.toString();
+    }
+
+    //---------------------------------以上为小米租车------------------------------------------
+
+
     //获取用户资料接口
     public static String getUserInfo() {
         StringBuffer sb = new StringBuffer(baseUrl);
@@ -45,8 +71,6 @@ public class HttpConstants {
         sb.append("?userId=").append(AppConfig.userInfoBean.getUserId());
         return sb.toString();
     }
-
-    //---------------------------------以上为小米租车------------------------------------------
 
     //开启电子围栏
     public static String getOpenVfUrl(double lon, double lat, double maxLon, double maxLat, double minLon, double minLat) {
@@ -157,14 +181,6 @@ public class HttpConstants {
     public static String saveOnlineBookUrl() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("/book/saveOnlineBook.do");
-        return sb.toString();
-    }
-
-    //退出账号
-    public static String getLogoutUrl() {
-        StringBuffer sb = new StringBuffer(baseUrl);
-        sb.append("/logout.do");
-//        sb.append("?carId=").append(AppConfig.userInfoBean.getCarId());
         return sb.toString();
     }
 

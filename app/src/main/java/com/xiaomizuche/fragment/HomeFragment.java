@@ -11,6 +11,7 @@ import com.xiaomizuche.activity.LoginActivity;
 import com.xiaomizuche.activity.ManageCardActivity;
 import com.xiaomizuche.base.BaseFragment;
 import com.xiaomizuche.bean.UserInfoBean;
+import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.view.TopBarView;
 
 import org.xutils.view.annotation.Event;
@@ -34,12 +35,17 @@ public class HomeFragment extends BaseFragment {
         isPrepared = true;
         EventBus.getDefault().register(this);
 
-        topBarView.setRightCallback(new TopBarView.TopBarRightCallback() {
-            @Override
-            public void setRightOnClickListener() {
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-            }
-        });
+        if (AppConfig.userInfoBean != null) {
+            topBarView.setRightTextEnabled(false);
+        } else {
+            topBarView.setRightCallback(new TopBarView.TopBarRightCallback() {
+                @Override
+                public void setRightOnClickListener() {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
+            });
+        }
+
         return view;
     }
 

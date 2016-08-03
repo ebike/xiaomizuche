@@ -5,7 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.widget.ImageView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiaomizuche.R;
 import com.xiaomizuche.view.ZoomImageView;
 
@@ -97,5 +100,25 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return degree;
+    }
+
+    /**
+     * 设置圆形头像
+     *
+     * @param headerImageView
+     */
+    public static void setCircularHeader(String url, ImageView headerImageView) {
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        DisplayImageOptions optionsHeadIcon = new DisplayImageOptions.Builder()
+                .showStubImage(R.mipmap.icon_default_head)         //加载开始默认的图片
+                .showImageForEmptyUri(R.mipmap.icon_default_head)     //url爲空會显示该图片，自己放在drawable里面的
+                .showImageOnFail(R.mipmap.icon_default_head)                //加载图片出现问题，会显示该图片
+                .cacheOnDisc()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)//缓存用
+                //.displayer(new RoundedBitmapDisplayer(90))       //图片圆角显示，值为整数
+                .build();
+        imageLoader.displayImage(url, headerImageView, optionsHeadIcon);
     }
 }

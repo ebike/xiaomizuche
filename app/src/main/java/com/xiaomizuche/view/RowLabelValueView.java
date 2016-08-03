@@ -19,7 +19,6 @@ import org.xutils.x;
 /**
  * 横向的条目组件
  * 包含：左侧标题、右测内容、上下横线（0：无线；1：长线；2：短线）
- * Created by jimmy on 16/1/18.
  */
 public class RowLabelValueView extends RelativeLayout {
     private View rootView;

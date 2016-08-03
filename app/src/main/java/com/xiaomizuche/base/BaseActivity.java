@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.activity.LoginActivity;
-import com.xiaomizuche.bean.CarLikeImeiBean;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.callback.DSingleDialogCallback;
@@ -24,6 +23,8 @@ import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.utils.DensityUtil;
 import com.xiaomizuche.utils.PreferencesUtil;
+import com.xiaomizuche.utils.SPUtils;
+import com.xiaomizuche.utils.T;
 import com.xiaomizuche.view.LoadingDialog;
 
 import org.xutils.http.RequestParams;
@@ -234,20 +235,19 @@ public abstract class BaseActivity extends FragmentActivity {
             DHttpUtils.get_String(this, true, params, new DCommonCallback<String>() {
                 @Override
                 public void onSuccess(String result) {
-                    ResponseBean<Object> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<CarLikeImeiBean>>() {
+                    ResponseBean bean = new Gson().fromJson(result, new TypeToken<ResponseBean>() {
                     }.getType());
                     if (bean.getCode() == 1) {
                         AppConfig.loginName = "";
                         AppConfig.password = "";
                         AppConfig.userInfoBean = null;
                         AppConfig.isExecuteVF = null;
-                        preferencesUtil.setPrefString(BaseActivity.this, AppConfig.LOGIN_NAME, "");
-                        preferencesUtil.setPrefString(BaseActivity.this, AppConfig.PASSWORD, "");
+                        SPUtils.clear(BaseActivity.this);
                         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
                         startActivity(intent);
                         EventBus.getDefault().post(new FinishActivityEvent(true, "BaseActivity"));
                     } else {
-                        showShortText(bean.getErrmsg());
+                        T.showShort(BaseActivity.this, bean.getErrmsg());
                     }
                 }
             });

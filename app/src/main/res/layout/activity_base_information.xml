@@ -15,46 +15,52 @@
         app:has_center="true"
         app:has_left="true"
         app:has_left_clickable="true"
-        app:left_icon="@mipmap/back_icon"
-        app:left_text="@string/back" />
+        app:left_icon="@mipmap/icon_left_arrow" />
 
-    <com.xiaomizuche.view.RowLabelValueView
-        android:id="@+id/rlvv_equipment_serial_number"
+    <RelativeLayout
+        android:id="@+id/rl_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:row_label_value_bottom_line="1"
-        app:row_label_value_label="@string/equipment_serial_number1"
-        app:row_label_value_top_line="1" />
+        android:background="@color/white"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp">
 
-    <com.xiaomizuche.view.RowLabelValueView
-        android:id="@+id/rlvv_imei"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:row_label_value_bottom_line="2"
-        app:row_label_value_label="@string/imei"
-        app:row_label_value_top_line="1" />
+        <TextView
+            style="@style/gray3_16"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:text="头像" />
 
-    <com.xiaomizuche.view.RowLabelValueView
-        android:id="@+id/rlvv_data_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:row_label_value_bottom_line="2"
-        app:row_label_value_label="@string/information_id_card" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    <com.xiaomizuche.view.RowLabelValueView
-        android:id="@+id/rlvv_open_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:row_label_value_bottom_line="2"
-        app:row_label_value_label="@string/open_date" />
+            <ImageView
+                android:id="@+id/iv_header"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@mipmap/icon_default_head" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:src="@mipmap/right_arrow_icon" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <com.xiaomizuche.view.RowLabelValueView
         android:id="@+id/rlvv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         app:row_label_value_bottom_line="2"
         app:row_label_value_can_click="true"
         app:row_label_value_has_right_arrow="true"
@@ -71,22 +77,31 @@
         app:row_label_value_label="@string/sex" />
 
     <com.xiaomizuche.view.RowLabelValueView
-        android:id="@+id/rlvv_contact_phone"
+        android:id="@+id/rlvv_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:row_label_value_bottom_line="2"
         app:row_label_value_can_click="true"
         app:row_label_value_has_right_arrow="true"
-        app:row_label_value_label="@string/contact_phone" />
+        app:row_label_value_label="手机号码" />
 
     <com.xiaomizuche.view.RowLabelValueView
-        android:id="@+id/rlvv_work_phone"
+        android:id="@+id/rlvv_id_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:row_label_value_bottom_line="2"
         app:row_label_value_can_click="true"
         app:row_label_value_has_right_arrow="true"
-        app:row_label_value_label="@string/work_phone" />
+        app:row_label_value_label="身份证号" />
+
+    <com.xiaomizuche.view.RowLabelValueView
+        android:id="@+id/rlvv_user_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:row_label_value_bottom_line="2"
+        app:row_label_value_can_click="true"
+        app:row_label_value_has_right_arrow="true"
+        app:row_label_value_label="用户类型" />
 
     <com.xiaomizuche.view.RowLabelValueView
         android:id="@+id/rlvv_area"
@@ -95,25 +110,13 @@
         app:row_label_value_bottom_line="2"
         app:row_label_value_can_click="true"
         app:row_label_value_has_right_arrow="true"
-        app:row_label_value_label="@string/region" />
+        app:row_label_value_label="所在地区" />
 
     <com.xiaomizuche.view.RowLabelValueView
         android:id="@+id/rlvv_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:row_label_value_bottom_line="1"
-        app:row_label_value_can_click="true"
-        app:row_label_value_has_right_arrow="true"
-        app:row_label_value_label="@string/detailed_address" />
-
-    <com.xiaomizuche.view.RowLabelValueView
-        android:id="@+id/rlvv_belongs_to_unit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        app:row_label_value_bottom_line="1"
-        app:row_label_value_label="@string/belongs_to_unit"
-        app:row_label_value_top_line="1" />
+        app:row_label_value_label="详细地址" />
 
 </LinearLayout>

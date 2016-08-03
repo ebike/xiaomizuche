@@ -9,17 +9,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xiaomizuche.R;
+import com.xiaomizuche.activity.AboutActivity;
 import com.xiaomizuche.activity.BaseInformationActivity;
 import com.xiaomizuche.activity.LoginActivity;
+import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.base.BaseFragment;
+import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.utils.CommonUtils;
 
-import org.xutils.image.ImageOptions;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
+
+import de.greenrobot.event.EventBus;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * 我的
@@ -41,21 +47,12 @@ public class MyFragment extends BaseFragment {
     @ViewInject(R.id.tv_date)
     TextView dateView;
 
-    private ImageOptions imageOptions;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my, container, false);
         x.view().inject(this, view);
         isPrepared = true;
-
-        imageOptions = new ImageOptions.Builder()
-                .setAutoRotate(true)
-                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
-                .setLoadingDrawableId(R.mipmap.icon_default_head)
-                .setFailureDrawableId(R.mipmap.icon_default_head)
-                .build();
-
+        EventBus.getDefault().register(this);
 
         return view;
     }
@@ -69,7 +66,10 @@ public class MyFragment extends BaseFragment {
             noLoginView.setVisibility(View.GONE);
             nameLayout.setVisibility(View.VISIBLE);
             dateLayout.setVisibility(View.VISIBLE);
-            x.image().bind(headerView, AppConfig.userInfoBean.getHeadPic(), imageOptions);
+            Glide.with(getActivity())
+                    .load(AppConfig.userInfoBean.getHeadPic())
+                    .bitmapTransform(new CropCircleTransformation(getActivity()))
+                    .into(headerView);
             if (!CommonUtils.strIsEmpty(AppConfig.userInfoBean.getUserName())) {
                 nameView.setText(AppConfig.userInfoBean.getUserName());
             }
@@ -80,6 +80,7 @@ public class MyFragment extends BaseFragment {
             nameLayout.setVisibility(View.GONE);
             dateLayout.setVisibility(View.GONE);
         }
+        hasLoadedOnce = true;
     }
 
     @Event(value = R.id.ll_user_info)
@@ -108,12 +109,22 @@ public class MyFragment extends BaseFragment {
 
     @Event(value = R.id.rev_about)
     private void about(View view) {
-
+        startActivity(new Intent(getActivity(), AboutActivity.class));
     }
 
     @Event(value = R.id.ll_logout)
     private void logout(View view) {
-
+        ((BaseActivity) getActivity()).logout();
     }
 
+    public void onEvent(UserInfoBean bean) {
+        hasLoadedOnce = false;
+        requestDatas();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
 }

@@ -11,117 +11,216 @@
         app:center_text="申请用车"
         app:has_center="true" />
 
-    <RelativeLayout
-        android:id="@+id/rl_car_number"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="32dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/iv_car_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:src="@mipmap/icon_ebike" />
-
-        <EditText
-            android:id="@+id/et_car_number"
+        <FrameLayout
+            android:id="@+id/fl_location"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/iv_car_number"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/iv_car_number"
-            android:background="@null"
-            android:hint="输入车辆编号"
-            android:textColorHint="@color/font_gray"
-            android:textSize="14sp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <View
-            android:id="@+id/v_line_car_number"
+            <com.amap.api.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:orientation="vertical"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp">
+
+                <ImageView
+                    android:id="@+id/iv_traffic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/icon_traffic_close" />
+
+                <ImageView
+                    android:id="@+id/iv_map_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_traffic"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/map_switch" />
+
+                <ImageView
+                    android:id="@+id/iv_trajectory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_map_type"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/icon_track_search" />
+
+                <ImageView
+                    android:id="@+id/iv_fence"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_trajectory"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/icon_fence_close" />
+
+                <ImageView
+                    android:id="@+id/iv_nav"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/icon_nav" />
+
+                <ImageView
+                    android:id="@+id/iv_car_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/iv_nav"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/icon_car_status" />
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_hire_car"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/et_car_number"
-            android:layout_marginTop="8dp"
-            android:background="@color/font_gray" />
-    </RelativeLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="16dp">
+            <RelativeLayout
+                android:id="@+id/rl_car_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="32dp">
 
-        <ImageView
-            android:id="@+id/iv_validatecode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:src="@mipmap/icon_phone" />
+                <ImageView
+                    android:id="@+id/iv_car_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:src="@mipmap/icon_ebike" />
 
-        <TextView
-            android:id="@+id/tv_send_validatecode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_phone"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/border_gray"
-            android:paddingBottom="4dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="4dp"
-            android:text="获取验证码"
-            android:textColor="@color/font_gray"
-            android:textSize="12sp" />
+                <EditText
+                    android:id="@+id/et_car_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/iv_car_number"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/iv_car_number"
+                    android:background="@null"
+                    android:hint="输入车辆编号"
+                    android:textColorHint="@color/font_gray"
+                    android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/et_validatecode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/iv_validatecode"
-            android:layout_marginLeft="8dp"
-            android:layout_toLeftOf="@id/tv_send_validatecode"
-            android:layout_toRightOf="@id/iv_validatecode"
-            android:background="@null"
-            android:digits="@string/digits_number"
-            android:hint="请输入收到的验证码"
-            android:inputType="phone"
-            android:textColorHint="@color/font_gray"
-            android:textSize="14sp" />
+                <View
+                    android:id="@+id/v_line_car_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/et_car_number"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/font_gray" />
+            </RelativeLayout>
 
-        <View
-            android:id="@+id/v_line_validatecode"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/iv_validatecode"
-            android:layout_marginTop="8dp"
-            android:background="@color/font_gray" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="16dp">
 
-    <Button
-        android:id="@+id/btn_apply"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/login_button"
-        android:text="立即申请"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+                <ImageView
+                    android:id="@+id/iv_validatecode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:src="@mipmap/icon_phone" />
 
-    <Button
-        android:id="@+id/btn_"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/button_green"
-        android:text="附近车辆"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/tv_send_validatecode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/iv_phone"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/border_gray"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="4dp"
+                    android:text="获取验证码"
+                    android:textColor="@color/font_gray"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/et_validatecode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/iv_validatecode"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toLeftOf="@id/tv_send_validatecode"
+                    android:layout_toRightOf="@id/iv_validatecode"
+                    android:background="@null"
+                    android:digits="@string/digits_number"
+                    android:hint="请输入收到的验证码"
+                    android:inputType="phone"
+                    android:textColorHint="@color/font_gray"
+                    android:textSize="14sp" />
+
+                <View
+                    android:id="@+id/v_line_validatecode"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/iv_validatecode"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/font_gray" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_apply"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/login_button"
+                android:text="立即申请"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btn_"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/button_green"
+                android:text="附近车辆"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

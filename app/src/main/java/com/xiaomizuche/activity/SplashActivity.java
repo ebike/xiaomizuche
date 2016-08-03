@@ -9,12 +9,26 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
 import com.xiaomizuche.base.BaseActivity;
+import com.xiaomizuche.bean.ResponseBean;
+import com.xiaomizuche.bean.UserInfoBean;
+import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.callback.DDoubleDialogCallback;
 import com.xiaomizuche.constants.AppConfig;
+import com.xiaomizuche.http.DHttpUtils;
+import com.xiaomizuche.http.DRequestParamsUtils;
+import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
+import com.xiaomizuche.utils.SPUtils;
 import com.xiaomizuche.view.CustomDialog;
+
+import org.xutils.http.RequestParams;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SplashActivity extends BaseActivity {
 
@@ -73,26 +87,29 @@ public class SplashActivity extends BaseActivity {
                     final String loginName = preferencesUtil.getPrefString(SplashActivity.this, AppConfig.LOGIN_NAME, "");
                     final String password = preferencesUtil.getPrefString(SplashActivity.this, AppConfig.PASSWORD, "");
                     if (!CommonUtils.strIsEmpty(loginName) && !CommonUtils.strIsEmpty(password)) {
-//                        RequestParams params = new RequestParams(HttpConstants.getLoginUrl(loginName, password));
-//                        DHttpUtils.get_String(SplashActivity.this, false, params, new DCommonCallback<String>() {
-//                            @Override
-//                            public void onSuccess(String result) {
-//                                ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
-//                                }.getType());
-//                                if (responseBean.getCode() == 1) {
-//                                    //保存数据信息
-//                                    AppConfig.userInfoBean = responseBean.getData();
-//                                    preferencesUtil.setPrefString(SplashActivity.this, AppConfig.LOGIN_NAME, loginName);
-//                                    preferencesUtil.setPrefString(SplashActivity.this, AppConfig.PASSWORD, password);
-//                                    //注册极光推送别名
-//                                    setAlias();
-//                                    //进入首页
-//                                    goToActivity(MainActivity.class);
-//                                } else {
-//                                    goToActivity(LoginActivity.class);
-//                                }
-//                            }
-//                        });
+                        Map<String, String> map = new HashMap<>();
+                        map.put("loginName", loginName);
+                        map.put("password", password);
+                        map.put("clientId", AppConfig.imei);
+                        map.put("platform", "android:" + android.os.Build.VERSION.RELEASE);
+                        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getLoginUrl(), map);
+                        DHttpUtils.post_String(SplashActivity.this, false, params, new DCommonCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
+                                }.getType());
+                                if (responseBean.getCode() == 1) {
+                                    //保存数据信息
+                                    AppConfig.userInfoBean = responseBean.getData();
+                                    SPUtils.put(SplashActivity.this, AppConfig.LOGIN_NAME, loginName);
+                                    SPUtils.put(SplashActivity.this, AppConfig.PASSWORD, password);
+                                    //注册极光推送别名
+                                    setAlias();
+                                }
+                                //进入首页
+                                goToActivity(HomeActivity.class);
+                            }
+                        });
                     } else {
                         goToActivity(HomeActivity.class);
                     }
