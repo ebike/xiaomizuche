@@ -14,7 +14,7 @@
         app:has_center="true"
         app:has_left="true"
         app:has_left_clickable="true"
-        app:left_icon="@mipmap/back_icon" />
+        app:left_icon="@mipmap/icon_left_arrow" />
 
     <View
         style="@style/base_line"

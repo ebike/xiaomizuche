@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
 import com.xiaomizuche.base.BaseActivity;
-import com.xiaomizuche.bean.CarInfoBean;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.callback.DCommonCallback;
@@ -30,7 +29,6 @@ public class UpdateTextValueActivity extends BaseActivity {
     TopBarView topBarView;
     @ViewInject(R.id.et_field)
     EditText fieldEditText;
-    private int type;
     private String fieldName;
     private String fieldValue;
     private String fieldName_CH;
@@ -42,7 +40,6 @@ public class UpdateTextValueActivity extends BaseActivity {
 
     @Override
     public void getIntentData(Bundle savedInstanceState) {
-        type = getIntent().getIntExtra("type", -1);
         fieldName_CH = getIntent().getStringExtra("fieldName_CH");
         fieldValue = getIntent().getStringExtra("fieldValue");
         fieldName = getIntent().getStringExtra("fieldName");
@@ -64,38 +61,20 @@ public class UpdateTextValueActivity extends BaseActivity {
                 //老值和新值不同是进行保存
                 if (!fieldValue.equals(newValue)) {
                     Map<String, String> map = new HashMap<String, String>();
-//                    map.put("carId", AppConfig.userInfoBean.getCarId() + "");
+                    map.put("userId", AppConfig.userInfoBean.getUserId() + "");
                     map.put(fieldName, newValue);
-                    String url = "";
-                    if (type == 1) {
-                        url = HttpConstants.getUpdateUserUrl();
-                        map.put("userId", AppConfig.userInfoBean.getUserId());
-                    } else if (type == 2) {
-                        url = HttpConstants.getUpdateCarUrl();
-                    }
-                    RequestParams params = DRequestParamsUtils.getRequestParams_Header(url, map);
+                    RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getUpdateUserUrl(), map);
                     DHttpUtils.post_String(UpdateTextValueActivity.this, true, params, new DCommonCallback<String>() {
                         @Override
                         public void onSuccess(String result) {
-                            if (type == 1) {
-                                ResponseBean<UserInfoBean> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
-                                }.getType());
-                                if (bean.getCode() == 1) {
-                                    AppConfig.userInfoBean = bean.getData();
-                                    EventBus.getDefault().post(bean.getData());
-                                } else {
-                                    showShortText(bean.getErrmsg());
-                                }
-                            } else if (type == 2) {
-                                ResponseBean<CarInfoBean> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<CarInfoBean>>() {
-                                }.getType());
-                                if (bean.getCode() == 1) {
-                                    EventBus.getDefault().post(bean.getData());
-                                } else {
-                                    showShortText(bean.getErrmsg());
-                                }
+                            ResponseBean<UserInfoBean> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
+                            }.getType());
+                            if (bean.getCode() == 1) {
+                                AppConfig.userInfoBean = bean.getData();
+                                EventBus.getDefault().post(bean.getData());
+                            } else {
+                                showShortText(bean.getErrmsg());
                             }
-
                         }
                     });
                 }

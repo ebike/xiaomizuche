@@ -59,9 +59,9 @@ public class AppConfig {
     /**
      * 当前选择的照片位置
      **/
-    public static final String CAMERA_PIC_PATH = Environment.getExternalStorageDirectory() + "/ebike/CameraPic/";
+    public static final String CAMERA_PIC_PATH = Environment.getExternalStorageDirectory() + "/zuche/CameraPic/";
     //压缩图片路径
-    public static final String compressedImage = Environment.getExternalStorageDirectory() + "/ebike/compressedImage/";
+    public static final String compressedImage = Environment.getExternalStorageDirectory() + "/zuche/compressedImage/";
     //底部菜单报警消息图标的角标组件
     public static BadgeView badge;
     //历史位置

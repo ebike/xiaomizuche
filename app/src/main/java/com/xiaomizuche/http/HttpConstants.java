@@ -61,6 +61,20 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //修改用户资料接口
+    public static String getUpdateUserUrl() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/updateUserData.do");
+        return sb.toString();
+    }
+
+    //修改用户头像接口
+    public static String updateHeadPic(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/updateHeadPic.do");
+        return sb.toString();
+    }
+
     //---------------------------------以上为小米租车------------------------------------------
 
 
@@ -181,13 +195,6 @@ public class HttpConstants {
     public static String saveOnlineBookUrl() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("/book/saveOnlineBook.do");
-        return sb.toString();
-    }
-
-    //修改基本资料
-    public static String getUpdateUserUrl() {
-        StringBuffer sb = new StringBuffer(baseUrl);
-        sb.append("/car/updateUser.do");
         return sb.toString();
     }
 

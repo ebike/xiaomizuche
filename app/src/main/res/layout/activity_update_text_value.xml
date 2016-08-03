@@ -15,7 +15,7 @@
         app:has_left_clickable="true"
         app:has_right="true"
         app:has_right_clickable="true"
-        app:left_icon="@mipmap/back_icon"
+        app:left_icon="@mipmap/icon_left_arrow"
         app:right_text="@string/save" />
 
     <View

@@ -1,6 +1,7 @@
 package com.xiaomizuche.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,13 @@ import com.xiaomizuche.R;
 import com.xiaomizuche.activity.AboutActivity;
 import com.xiaomizuche.activity.BaseInformationActivity;
 import com.xiaomizuche.activity.LoginActivity;
+import com.xiaomizuche.activity.WebActivity;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.base.BaseFragment;
 import com.xiaomizuche.bean.UserInfoBean;
+import com.xiaomizuche.callback.DSingleDialogCallback;
 import com.xiaomizuche.constants.AppConfig;
+import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
 
 import org.xutils.view.annotation.Event;
@@ -99,12 +103,26 @@ public class MyFragment extends BaseFragment {
 
     @Event(value = R.id.rev_service)
     private void service(View view) {
-
+        Intent intent = new Intent(getActivity(), WebActivity.class);
+        intent.putExtra("title", "服务条款");
+        intent.putExtra("url", HttpConstants.baseUrl + "h5/service_terms.html");
+        startActivity(intent);
     }
 
     @Event(value = R.id.rev_contact_customer_service)
     private void contactCustomerService(View view) {
-
+        CommonUtils.showCustomDialog3(getActivity(), "呼叫", "取消", "", "0531-67805000", new DSingleDialogCallback() {
+            @Override
+            public void onPositiveButtonClick(String editText) {
+                // 用intent启动拨打电话
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:053167805000"));
+                try {
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Event(value = R.id.rev_about)

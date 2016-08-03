@@ -233,7 +233,7 @@ public class AddUserInfoActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
-                sex = "1";
+                sex = "0";
                 sexView.setText("男");
             }
         });
@@ -241,7 +241,7 @@ public class AddUserInfoActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
-                sex = "2";
+                sex = "1";
                 sexView.setText("女");
             }
         });

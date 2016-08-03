@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         app:row_label_value_bottom_line="2"
         app:row_label_value_can_click="true"
-        app:row_label_value_has_right_arrow="true"
+        app:row_label_value_has_right_arrow="false"
         app:row_label_value_label="手机号码" />
 
     <com.xiaomizuche.view.RowLabelValueView
@@ -100,7 +100,7 @@
         android:layout_height="wrap_content"
         app:row_label_value_bottom_line="2"
         app:row_label_value_can_click="true"
-        app:row_label_value_has_right_arrow="true"
+        app:row_label_value_has_right_arrow="false"
         app:row_label_value_label="用户类型" />
 
     <com.xiaomizuche.view.RowLabelValueView

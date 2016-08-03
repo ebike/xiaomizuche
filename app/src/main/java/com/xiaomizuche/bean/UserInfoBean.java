@@ -23,6 +23,9 @@ public class UserInfoBean implements Serializable{
     private String startTime;
     private String expireTime;
     private String userToken;
+    private String schoolId;
+    private String schoolName;
+    private CarRecordBean carRecord;
 
     public UserInfoBean() {
     }
@@ -153,5 +156,29 @@ public class UserInfoBean implements Serializable{
 
     public void setHeadPic(String headPic) {
         this.headPic = headPic;
+    }
+
+    public CarRecordBean getCarRecord() {
+        return carRecord;
+    }
+
+    public void setCarRecord(CarRecordBean carRecord) {
+        this.carRecord = carRecord;
+    }
+
+    public String getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(String schoolId) {
+        this.schoolId = schoolId;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
     }
 }
