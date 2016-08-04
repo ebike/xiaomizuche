@@ -8,7 +8,6 @@
         android:id="@+id/tv_school_user"
         style="@style/black_16"
         android:layout_width="match_parent"
-        android:drawableRight="@mipmap/right_arrow_icon"
         android:padding="16dp"
         android:text="学校用户" />
 
@@ -20,7 +19,6 @@
         android:id="@+id/tv_common_user"
         style="@style/black_16"
         android:layout_width="match_parent"
-        android:drawableRight="@mipmap/right_arrow_icon"
         android:padding="16dp"
         android:text="普通用户" />
 

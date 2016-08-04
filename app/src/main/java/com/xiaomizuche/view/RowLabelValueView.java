@@ -130,6 +130,10 @@ public class RowLabelValueView extends RelativeLayout {
         this.onClickCallback = onClickCallback;
     }
 
+    public void setLabel(String label) {
+        labelTextView.setText(label);
+    }
+
     public void setValue(String value) {
         valueTextView.setVisibility(View.VISIBLE);
         valueTextView.setText(value);

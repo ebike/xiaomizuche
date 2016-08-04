@@ -117,6 +117,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:row_label_value_bottom_line="1"
+        app:row_label_value_can_click="true"
+        app:row_label_value_has_right_arrow="true"
         app:row_label_value_label="详细地址" />
 
 </LinearLayout>

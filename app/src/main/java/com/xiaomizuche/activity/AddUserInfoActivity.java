@@ -1,5 +1,6 @@
 package com.xiaomizuche.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -228,6 +229,18 @@ public class AddUserInfoActivity extends BaseActivity {
         View view = LayoutInflater.from(this).inflate(R.layout.view_sex, null, false);
         TextView manView = (TextView) view.findViewById(R.id.tv_man);
         TextView womanView = (TextView) view.findViewById(R.id.tv_woman);
+        TextView otherView = (TextView) view.findViewById(R.id.tv_other);
+        Drawable drawable = getResources().getDrawable(R.mipmap.icon_sel);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        if (!CommonUtils.strIsEmpty(sex)) {
+            if ("0".equals(sex)) {
+                manView.setCompoundDrawables(null, null, drawable, null);
+            } else if ("1".equals(sex)) {
+                womanView.setCompoundDrawables(null, null, drawable, null);
+            } else if ("2".equals(sex)) {
+                otherView.setCompoundDrawables(null, null, drawable, null);
+            }
+        }
         final CustomDialog dialog = CommonUtils.showCustomDialog1(this, "选择性别", view);
         manView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,12 +258,29 @@ public class AddUserInfoActivity extends BaseActivity {
                 sexView.setText("女");
             }
         });
+        otherView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                sex = "2";
+                sexView.setText("保密");
+            }
+        });
     }
 
     private void chooseUserType() {
         View view = LayoutInflater.from(this).inflate(R.layout.view_user_type, null, false);
         TextView schoolUserView = (TextView) view.findViewById(R.id.tv_school_user);
         TextView commonUserView = (TextView) view.findViewById(R.id.tv_common_user);
+        Drawable drawable = getResources().getDrawable(R.mipmap.icon_sel);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        if (!CommonUtils.strIsEmpty(userType)) {
+            if ("1".equals(userType)) {
+                schoolUserView.setCompoundDrawables(null, null, drawable, null);
+            } else if ("2".equals(userType)) {
+                commonUserView.setCompoundDrawables(null, null, drawable, null);
+            }
+        }
         final CustomDialog dialog = CommonUtils.showCustomDialog1(this, "选择用户类型", view);
         schoolUserView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,6 +308,9 @@ public class AddUserInfoActivity extends BaseActivity {
         View view = LayoutInflater.from(this).inflate(R.layout.view_school, null, false);
         ListView listView = (ListView) view.findViewById(R.id.list_view);
         SchoolAdapter adapter = new SchoolAdapter(this);
+        if (schoolBean != null) {
+            adapter.setSchoolId(schoolBean.getId());
+        }
         if (schoolList != null && schoolList.size() > 0) {
             adapter.setList(schoolList);
         }

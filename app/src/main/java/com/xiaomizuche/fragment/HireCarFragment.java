@@ -45,6 +45,7 @@ public class HireCarFragment extends BaseFragment {
         x.view().inject(this, view);
         isPrepared = true;
 
+        hireCarLayout.setVisibility(View.VISIBLE);
         return view;
     }
 

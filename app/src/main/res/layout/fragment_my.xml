@@ -145,6 +145,8 @@
 
     </LinearLayout>
 
-    <View style="@style/base_line" />
+    <View
+        android:id="@+id/line"
+        style="@style/base_line" />
 
 </LinearLayout>

@@ -50,6 +50,10 @@ public class MyFragment extends BaseFragment {
     LinearLayout dateLayout;
     @ViewInject(R.id.tv_date)
     TextView dateView;
+    @ViewInject(R.id.ll_logout)
+    LinearLayout logoutLayout;
+    @ViewInject(R.id.line)
+    View lineView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,10 +83,14 @@ public class MyFragment extends BaseFragment {
             }
             phoneView.setText(AppConfig.userInfoBean.getPhone());
             dateView.setText(AppConfig.userInfoBean.getRegTime());
+            logoutLayout.setVisibility(View.VISIBLE);
+            lineView.setVisibility(View.VISIBLE);
         } else {
             noLoginView.setVisibility(View.VISIBLE);
             nameLayout.setVisibility(View.GONE);
             dateLayout.setVisibility(View.GONE);
+            logoutLayout.setVisibility(View.GONE);
+            lineView.setVisibility(View.GONE);
         }
         hasLoadedOnce = true;
     }

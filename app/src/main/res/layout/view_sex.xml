@@ -8,7 +8,6 @@
         android:id="@+id/tv_man"
         style="@style/black_16"
         android:layout_width="match_parent"
-        android:drawableRight="@mipmap/right_arrow_icon"
         android:padding="16dp"
         android:text="男" />
 
@@ -18,8 +17,16 @@
         android:id="@+id/tv_woman"
         style="@style/black_16"
         android:layout_width="match_parent"
-        android:drawableRight="@mipmap/right_arrow_icon"
         android:padding="16dp"
         android:text="女" />
+
+    <View style="@style/base_line" />
+
+    <TextView
+        android:id="@+id/tv_other"
+        style="@style/black_16"
+        android:layout_width="match_parent"
+        android:padding="16dp"
+        android:text="保密" />
 
 </LinearLayout>

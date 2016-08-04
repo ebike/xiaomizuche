@@ -3,18 +3,22 @@ package com.xiaomizuche.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
+import com.xiaomizuche.adapter.SchoolAdapter;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.ImageItem;
 import com.xiaomizuche.bean.LocationJson;
@@ -112,11 +116,15 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
             }
             if (AppConfig.userInfoBean.getUserType() == 1) {
                 userTypeView.setValue("学校用户");
+                addressView.setLabel("所在学校");
+                addressView.setValue(AppConfig.userInfoBean.getSchoolName());
             } else {
                 userTypeView.setValue("普通用户");
+                addressView.setLabel("详细地址");
+                addressView.setValue(AppConfig.userInfoBean.getAddress());
             }
             areaView.setValue(AppConfig.userInfoBean.getProvince() + "-" + AppConfig.userInfoBean.getCity() + "-" + AppConfig.userInfoBean.getArea());
-            addressView.setValue(AppConfig.userInfoBean.getAddress());
+            getSchool(AppConfig.userInfoBean.getProvince(), AppConfig.userInfoBean.getCity(), AppConfig.userInfoBean.getArea());
         }
         dialog = new AddressThreeWheelViewDialog(this);
         provinceDao = new ProvinceInfoDao(this);
@@ -128,9 +136,7 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
     public void setListener() {
         nameView.setOnClickCallback(this);
         sexView.setOnClickCallback(this);
-        phoneView.setOnClickCallback(this);
         idCardView.setOnClickCallback(this);
-        userTypeView.setOnClickCallback(this);
         areaView.setOnClickCallback(this);
         addressView.setOnClickCallback(this);
     }
@@ -300,14 +306,17 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
                     }
                 });
                 break;
-//            case R.id.rlvv_address:
-//                intent = new Intent(this, UpdateTextValueActivity.class);
-//                intent.putExtra("type", 1);
-//                intent.putExtra("fieldName_CH", getString(R.string.detailed_address));
-//                intent.putExtra("fieldValue", userInfoBean.getAddress());
-//                intent.putExtra("fieldName", "address");
-//                startActivity(intent);
-//                break;
+            case R.id.rlvv_address:
+                if (AppConfig.userInfoBean.getUserType() == 1) {
+                    chooseSchool();
+                } else {
+                    intent = new Intent(this, UpdateTextValueActivity.class);
+                    intent.putExtra("fieldName_CH", getString(R.string.detailed_address));
+                    intent.putExtra("fieldValue", AppConfig.userInfoBean.getAddress());
+                    intent.putExtra("fieldName", "address");
+                    startActivity(intent);
+                }
+                break;
         }
     }
 
@@ -335,15 +344,32 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
         View view = LayoutInflater.from(this).inflate(R.layout.view_sex, null, false);
         TextView manView = (TextView) view.findViewById(R.id.tv_man);
         TextView womanView = (TextView) view.findViewById(R.id.tv_woman);
+        TextView otherView = (TextView) view.findViewById(R.id.tv_other);
+        Drawable drawable = getResources().getDrawable(R.mipmap.icon_sel);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        if (AppConfig.userInfoBean.getSex() == 0) {
+            manView.setCompoundDrawables(null, null, drawable, null);
+        } else if (AppConfig.userInfoBean.getSex() == 1) {
+            womanView.setCompoundDrawables(null, null, drawable, null);
+        } else if (AppConfig.userInfoBean.getSex() == 2) {
+            otherView.setCompoundDrawables(null, null, drawable, null);
+        }
         final CustomDialog dialog = CommonUtils.showCustomDialog1(this, "选择性别", view);
         manView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                updateSex("0");
+            }
+        });
+        womanView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
                 updateSex("1");
             }
         });
-        womanView.setOnClickListener(new View.OnClickListener() {
+        otherView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
@@ -365,11 +391,57 @@ public class BaseInformationActivity extends BaseActivity implements RowLabelVal
                 if (bean.getCode() == 1) {
                     AppConfig.userInfoBean = bean.getData();
                     EventBus.getDefault().post(bean.getData());
-                    if ("1".equals(sex)) {
+                    if ("0".equals(sex)) {
                         sexView.setValue("男");
-                    } else {
+                    } else if ("1".equals(sex)) {
                         sexView.setValue("女");
+                    } else {
+                        sexView.setValue("保密");
                     }
+                } else {
+                    showShortText(bean.getErrmsg());
+                }
+
+            }
+        });
+    }
+
+    private void chooseSchool() {
+        View view = LayoutInflater.from(this).inflate(R.layout.view_school, null, false);
+        ListView listView = (ListView) view.findViewById(R.id.list_view);
+        SchoolAdapter adapter = new SchoolAdapter(this);
+        if (!CommonUtils.strIsEmpty(AppConfig.userInfoBean.getSchoolId())) {
+            adapter.setSchoolId(AppConfig.userInfoBean.getSchoolId());
+        }
+        if (schoolList != null && schoolList.size() > 0) {
+            adapter.setList(schoolList);
+        }
+        listView.setAdapter(adapter);
+        final CustomDialog dialog = CommonUtils.showCustomDialog1(this, "选择学校", view);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialog.cancel();
+                SchoolBean schoolBean = (SchoolBean) parent.getItemAtPosition(position);
+                updateSchool(schoolBean);
+            }
+        });
+    }
+
+    private void updateSchool(final SchoolBean schoolBean) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", AppConfig.userInfoBean.getUserId());
+        map.put("schoolId", schoolBean.getId());
+        RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getUpdateUserUrl(), map);
+        DHttpUtils.post_String(this, true, params, new DCommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ResponseBean<UserInfoBean> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
+                }.getType());
+                if (bean.getCode() == 1) {
+                    AppConfig.userInfoBean = bean.getData();
+                    EventBus.getDefault().post(bean.getData());
+                    addressView.setValue(schoolBean.getName());
                 } else {
                     showShortText(bean.getErrmsg());
                 }
