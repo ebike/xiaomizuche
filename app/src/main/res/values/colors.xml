@@ -51,5 +51,7 @@
     <color name="refresh_view_bg">#f6f6f6</color>
 
 
+    <color name="green">#3aab3d</color>
+    <color name="red">#ff0000</color>
 
 </resources>

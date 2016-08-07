@@ -21,7 +21,6 @@ import org.xutils.x;
 
 /**
  * http请求接口工具类
- * Created by jimmy on 2015/11/24.
  */
 public class DHttpUtils {
 

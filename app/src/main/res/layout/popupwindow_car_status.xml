@@ -57,23 +57,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/positioning_date"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_positioning_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/online_status"
                 android:textStyle="bold" />
 
@@ -125,11 +108,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/speed"
+                android:text="@string/lock_car_status"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_speed"
+                android:id="@+id/tv_lock_car_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -166,7 +149,7 @@
                 android:id="@+id/tv_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minLines="2"/>
+                android:minLines="2" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

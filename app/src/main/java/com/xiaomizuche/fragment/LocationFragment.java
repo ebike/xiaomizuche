@@ -115,16 +115,16 @@ public class LocationFragment extends BaseFragment implements Runnable, View.OnC
     TextView equipmentSerialNumberTextView;
     @ViewInject(R.id.tv_positioning_state)
     TextView positioningStateTextView;
-    @ViewInject(R.id.tv_positioning_date)
-    TextView positioningDateTextView;
+//    @ViewInject(R.id.tv_positioning_date)
+//    TextView positioningDateTextView;
     @ViewInject(R.id.tv_online_status)
     TextView onlineStatusTextView;
     @ViewInject(R.id.tv_acc)
     TextView accTextView;
     @ViewInject(R.id.tv_main_power)
     TextView mainPowerTextView;
-    @ViewInject(R.id.tv_speed)
-    TextView speedTextView;
+//    @ViewInject(R.id.tv_speed)
+//    TextView speedTextView;
     @ViewInject(R.id.tv_direction)
     TextView directionTextView;
     @ViewInject(R.id.tv_address)
@@ -336,7 +336,7 @@ public class LocationFragment extends BaseFragment implements Runnable, View.OnC
                     } else if (locInfoBean.getSourceType() == 2) {
                         positioningStateTextView.setText("基站定位");
                     }
-                    positioningDateTextView.setText(locInfoBean.getSatelliteTime());
+//                    positioningDateTextView.setText(locInfoBean.getSatelliteTime());
                     if (locInfoBean.getIsOnline().equals("1")) {
                         onlineStatusTextView.setText("在线");
                     } else {
@@ -352,7 +352,7 @@ public class LocationFragment extends BaseFragment implements Runnable, View.OnC
                     } else {
                         mainPowerTextView.setText("关闭");
                     }
-                    speedTextView.setText(locInfoBean.getSpeed() + "km/h");
+//                    speedTextView.setText(locInfoBean.getSpeed() + "km/h");
                     directionTextView.setText(MapUtils.directionStr(locInfoBean.getHeading()));
                     GeocodeSearch geocodeSearch = new GeocodeSearch(getActivity());
                     geocodeSearch.setOnGeocodeSearchListener(LocationFragment.this);

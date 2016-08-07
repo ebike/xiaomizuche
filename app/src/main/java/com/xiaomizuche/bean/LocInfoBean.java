@@ -1,7 +1,7 @@
 package com.xiaomizuche.bean;
 
 /**
- * Created by jimmy on 16/1/3.
+ * Created by huguangwen on 16/1/3.
  */
 public class LocInfoBean {
     private int carId;
@@ -21,6 +21,11 @@ public class LocInfoBean {
     private int vfLon;
     private int vfLat;
     private int vfStatus;
+    private String currVoltage;
+    private String controlType;
+    private String upVoltage;
+    private String remainBattery;
+    private String voltage;
 
     public LocInfoBean() {
     }
@@ -159,5 +164,45 @@ public class LocInfoBean {
 
     public int getVfStatus() {
         return vfStatus;
+    }
+
+    public String getControlType() {
+        return controlType;
+    }
+
+    public void setControlType(String controlType) {
+        this.controlType = controlType;
+    }
+
+    public String getUpVoltage() {
+        return upVoltage;
+    }
+
+    public void setUpVoltage(String upVoltage) {
+        this.upVoltage = upVoltage;
+    }
+
+    public String getRemainBattery() {
+        return remainBattery;
+    }
+
+    public void setRemainBattery(String remainBattery) {
+        this.remainBattery = remainBattery;
+    }
+
+    public String getCurrVoltage() {
+        return currVoltage;
+    }
+
+    public void setCurrVoltage(String currVoltage) {
+        this.currVoltage = currVoltage;
+    }
+
+    public String getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(String voltage) {
+        this.voltage = voltage;
     }
 }

@@ -25,14 +25,14 @@ public class HttpConstants {
     }
 
     //完善资料
-    public static String perfectUserData(){
+    public static String perfectUserData() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("user/perfectUserData.do");
         return sb.toString();
     }
 
     //根据省市区获取学校接口
-    public static String getSchools(){
+    public static String getSchools() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("user/getSchools.do");
         return sb.toString();
@@ -47,14 +47,14 @@ public class HttpConstants {
     }
 
     //租车接口
-    public static String hireCar(){
+    public static String hireCar() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("car/hireCar.do");
         return sb.toString();
     }
 
     //获取用户当前租车信息
-    public static String getUserCarRecord(){
+    public static String getUserCarRecord() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("car/getUserCarRecord.do");
         sb.append("?userId=").append(AppConfig.userInfoBean.getUserId());
@@ -69,28 +69,65 @@ public class HttpConstants {
     }
 
     //修改用户头像接口
-    public static String updateHeadPic(){
+    public static String updateHeadPic() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("user/updateHeadPic.do");
         return sb.toString();
     }
 
-    //---------------------------------以上为小米租车------------------------------------------
-
-
-    //获取用户资料接口
-    public static String getUserInfo() {
+    //还车接口
+    public static String backCar() {
         StringBuffer sb = new StringBuffer(baseUrl);
-        sb.append("user/getUserInfo.do");
-        sb.append("?userId=").append(AppConfig.userInfoBean.getUserId());
+        sb.append("car/backCar.do");
         return sb.toString();
+    }
+
+    //远程锁车
+    public static String getlockBikeUrl(String type) {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("lock/lockBike.do");
+        sb.append("?carId=").append(AppConfig.userInfoBean.getCarRecord().getCarId());
+        sb.append("&userId=").append(AppConfig.userInfoBean.getUserId());
+        sb.append("&para=").append(type);
+        return sb.toString();
+    }
+
+    //远程解锁
+    public static String getUnLockBikeUrl(String type) {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("lock/unLockBike.do");
+        sb.append("?carId=").append(AppConfig.userInfoBean.getCarRecord().getCarId());
+        sb.append("&userId=").append(AppConfig.userInfoBean.getUserId());
+        sb.append("&para=").append(type);
+        return sb.toString();
+    }
+
+    //获取车辆位置信息
+    public static String getLocInfoUrl() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("map/getLocInfo.do");
+        sb.append("?carId=").append(AppConfig.userInfoBean.getCarRecord().getCarId());
+        sb.append("&userId=").append(AppConfig.userInfoBean.getUserId());
+        return sb.toString();
+    }
+
+    //根据起止时间查询轨迹信息
+    public static String getTrackInfoUrl(String startTime, String endTime) {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("map/searchTrack.do");
+        sb.append("?carId=").append(AppConfig.userInfoBean.getCarRecord().getCarId());
+        sb.append("&userId=").append(AppConfig.userInfoBean.getUserId());
+        sb.append("&startTime=").append(startTime);
+        sb.append("&endTime=").append(endTime);
+        return sb.toString().replace(" ", "%20");
     }
 
     //开启电子围栏
     public static String getOpenVfUrl(double lon, double lat, double maxLon, double maxLat, double minLon, double minLat) {
         StringBuffer sb = new StringBuffer(baseUrl);
-        sb.append("/vf/openVf.do");
-//        sb.append("?carId=").append(AppConfig.userInfoBean.getCarId());
+        sb.append("vf/openVf.do");
+        sb.append("?carId=").append(AppConfig.userInfoBean.getCarRecord().getCarId());
+        sb.append("&userId=").append(AppConfig.userInfoBean.getUserId());
         sb.append("&maxLon=").append(maxLon);
         sb.append("&maxLat=").append(maxLat);
         sb.append("&minLon=").append(minLon);
@@ -103,8 +140,20 @@ public class HttpConstants {
     //关闭电子围栏
     public static String getCloseVfUrl() {
         StringBuffer sb = new StringBuffer(baseUrl);
-        sb.append("/vf/closeVf.do");
-//        sb.append("?carId=").append(AppConfig.userInfoBean.getCarId());
+        sb.append("vf/closeVf.do");
+        sb.append("?carId=").append(AppConfig.userInfoBean.getCarRecord().getCarId());
+        sb.append("&userId=").append(AppConfig.userInfoBean.getUserId());
+        return sb.toString();
+    }
+
+    //---------------------------------以上为小米租车------------------------------------------
+
+
+    //获取用户资料接口
+    public static String getUserInfo() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/getUserInfo.do");
+        sb.append("?userId=").append(AppConfig.userInfoBean.getUserId());
         return sb.toString();
     }
 
@@ -148,28 +197,6 @@ public class HttpConstants {
 //        sb.append("?carId=").append(AppConfig.userInfoBean.getCarId());
         sb.append("&dayNum=").append(15);
         return sb.toString();
-    }
-
-    //获取车辆位置信息
-    public static String getLocInfoUrl() {
-        StringBuffer sb = new StringBuffer(baseUrl);
-        sb.append("map/getLocInfo.do");
-        if (AppConfig.userInfoBean != null) {
-//            sb.append("?carId=").append(AppConfig.userInfoBean.getCarId());
-        }
-        return sb.toString();
-    }
-
-    //根据起止时间查询轨迹信息
-    public static String getTrackInfoUrl(String startTime, String endTime) {
-        StringBuffer sb = new StringBuffer(baseUrl);
-        sb.append("/map/searchTrack.do");
-        if (AppConfig.userInfoBean != null) {
-//            sb.append("?carId=").append(AppConfig.userInfoBean.getCarId());
-        }
-        sb.append("&startTime=").append(startTime);
-        sb.append("&endTime=").append(endTime);
-        return sb.toString().replace(" ", "%20");
     }
 
     //查询报警消息

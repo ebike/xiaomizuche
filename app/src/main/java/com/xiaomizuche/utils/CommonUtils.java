@@ -19,15 +19,19 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.xiaomizuche.R;
 import com.xiaomizuche.callback.DDoubleDialogCallback;
 import com.xiaomizuche.callback.DSingleDialogCallback;
+import com.xiaomizuche.http.DMethods;
 import com.xiaomizuche.view.CustomDialog;
 
 import java.security.MessageDigest;
@@ -351,11 +355,11 @@ public class CommonUtils {
                 .setContentTitle(title) //标题
                 .setContentText(content)         //正文
                 .setNumber(1)                       //设置信息条数
-                //.setContentInfo("3")        //作用同上，设置信息的条数
-                // .setLargeIcon(smallicon)           //largeicon，
+                        //.setContentInfo("3")        //作用同上，设置信息的条数
+                        // .setLargeIcon(smallicon)           //largeicon，
 
                 .setDefaults(noticeType)//设置声音，此为默认声音
-                //.setVibrate(vT) //设置震动，此震动数组为：long vT[]={300,100,300,100}; 还可以设置灯光.setLights(argb, onMs, offMs)
+                        //.setVibrate(vT) //设置震动，此震动数组为：long vT[]={300,100,300,100}; 还可以设置灯光.setLights(argb, onMs, offMs)
                 .setOngoing(false)      //true使notification变为ongoing，用户不能手动清除，类似QQ,false或者不设置则为普通的通知
                 .setAutoCancel(true);//点击之后自动消失
         Intent resultIntent = new Intent(context, clazz);
@@ -872,5 +876,32 @@ public class CommonUtils {
             e.printStackTrace();
         }
         return versionName;
+    }
+
+    public static void backCar(final Context context, final View.OnClickListener callback) {
+        View view = LayoutInflater.from(context).inflate(R.layout.view_back_car, null, false);
+        final EditText validatecodeText = (EditText) view.findViewById(R.id.et_validatecode);
+        Button validatecodeButton = (Button) view.findViewById(R.id.btn_validatecode);
+        Button submitButton = (Button) view.findViewById(R.id.btn_submit);
+        final CustomDialog dialog = CommonUtils.showCustomDialog1(context, "", view);
+        validatecodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+
+            }
+        });
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String validatecode = validatecodeText.getText().toString().trim();
+                if (!CommonUtils.strIsEmpty(validatecode)) {
+                    dialog.cancel();
+                    DMethods.backCar(context, "1", callback);
+                } else {
+                    T.showShort(context, "请输入验证码");
+                }
+            }
+        });
     }
 }

@@ -87,7 +87,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
         viewPager.setOffscreenPageLimit(4);
         tabIndicatorList = ViewPagerUtils.getTabIndicator(4);
-        fragmentList = new ArrayList<Fragment>();
+        fragmentList = new ArrayList<>();
         fragmentList.add(new HomeFragment());
         fragmentList.add(new HireCarFragment());
         fragmentList.add(new ShopFragment());
@@ -125,6 +125,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 fragmentPosition = 3;
                 break;
         }
+        viewPager.setCurrentItem(fragmentPosition, false);
+        ViewPagerUtils.setBottomBar(this, fragmentPosition, textViews, imageViews);
+    }
+
+    public void changeToHireCar(){
+        fragmentPosition = 1;
         viewPager.setCurrentItem(fragmentPosition, false);
         ViewPagerUtils.setBottomBar(this, fragmentPosition, textViews, imageViews);
     }

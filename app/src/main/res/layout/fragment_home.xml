@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.xiaomizuche.view.TopBarView
@@ -52,6 +53,7 @@
             android:background="@color/main_line" />
 
         <TextView
+            android:id="@+id/tv_hire_car"
             style="@style/gray3_16"
             android:layout_weight="1"
             android:drawablePadding="18dp"
@@ -69,6 +71,7 @@
             android:background="@color/main_line" />
 
         <TextView
+            android:id="@+id/tv_back_car"
             style="@style/gray3_16"
             android:layout_weight="1"
             android:drawablePadding="18dp"

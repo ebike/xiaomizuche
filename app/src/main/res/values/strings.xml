@@ -25,6 +25,7 @@
     <string name="main_power">主电源：</string>
     <string name="speed">速度：</string>
     <string name="direction">方向：</string>
+    <string name="lock_car_status">锁车状态：</string>
     <string name="address">最后位置：</string>
     <string name="track_prompt">途经点</string>
     <string name="track_start">起点</string>
@@ -89,4 +90,9 @@
     <string name="digits_password">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLIMNOPQRSTUVWXYZ</string>
     <string name="digits_number">0123456789</string>
     <string name="digits_id_card">0123456789xX</string>
+
+    <string name="top_bar_battery">电量监测</string>
+    <string name="txt_track_prompt">途经点</string>
+    <string name="txt_start">起点</string>
+    <string name="txt_end">终点</string>
 </resources>

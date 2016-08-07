@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.xiaomizuche.view.TopBarView
@@ -58,6 +59,15 @@
                     android:src="@mipmap/map_switch" />
 
                 <ImageView
+                    android:id="@+id/iv_lock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_map_type"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp" />
+
+                <ImageView
                     android:id="@+id/iv_trajectory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -96,6 +106,16 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:src="@mipmap/icon_car_status" />
+
+                <ImageView
+                    android:id="@+id/iv_battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/iv_car_status"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/icon_map_battery" />
             </RelativeLayout>
 
         </FrameLayout>
@@ -115,29 +135,29 @@
                 android:layout_marginTop="32dp">
 
                 <ImageView
-                    android:id="@+id/iv_car_number"
+                    android:id="@+id/iv_car_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:src="@mipmap/icon_ebike" />
 
                 <EditText
-                    android:id="@+id/et_car_number"
+                    android:id="@+id/et_car_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/iv_car_number"
+                    android:layout_alignBottom="@+id/iv_car_id"
                     android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@+id/iv_car_number"
+                    android:layout_toRightOf="@+id/iv_car_id"
                     android:background="@null"
                     android:hint="输入车辆编号"
                     android:textColorHint="@color/font_gray"
                     android:textSize="14sp" />
 
                 <View
-                    android:id="@+id/v_line_car_number"
+                    android:id="@+id/v_line_car_id"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/et_car_number"
+                    android:layout_below="@id/et_car_id"
                     android:layout_marginTop="8dp"
                     android:background="@color/font_gray" />
             </RelativeLayout>
