@@ -11,6 +11,7 @@ import com.xiaomizuche.activity.MainActivity;
 import com.xiaomizuche.bean.ReceiveExtraBean;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.event.OnlineExceptionEvent;
+import com.xiaomizuche.event.RemoteLockCarEvent;
 import com.xiaomizuche.event.RemoteVFEvent;
 import com.xiaomizuche.utils.CommonUtils;
 
@@ -51,16 +52,28 @@ public class JReceiver extends BroadcastReceiver {
                 AppConfig.eventMsg = msg;
             } else {
                 switch (eventType) {
-                    case 8://电子围栏关闭超时
-                        EventBus.getDefault().post(new RemoteVFEvent("1", msg));
+                    case 1://锁车成功
+                        EventBus.getDefault().post(new RemoteLockCarEvent("1", msg));
                         break;
-                    case 7://电子围栏关闭成功
-                        EventBus.getDefault().post(new RemoteVFEvent("0", msg));
+                    case 2://锁车超时
+                        EventBus.getDefault().post(new RemoteLockCarEvent("0", msg));
+                        break;
+                    case 3://解锁成功
+                        EventBus.getDefault().post(new RemoteLockCarEvent("0", msg));
+                        break;
+                    case 4://解锁超时
+                        EventBus.getDefault().post(new RemoteLockCarEvent("1", msg));
+                        break;
+                    case 5://电子围栏开启成功
+                        EventBus.getDefault().post(new RemoteVFEvent("1", msg));
                         break;
                     case 6://电子围栏开启超时
                         EventBus.getDefault().post(new RemoteVFEvent("0", msg));
                         break;
-                    case 5://电子围栏开启成功
+                    case 7://电子围栏关闭成功
+                        EventBus.getDefault().post(new RemoteVFEvent("0", msg));
+                        break;
+                    case 8://电子围栏关闭超时
                         EventBus.getDefault().post(new RemoteVFEvent("1", msg));
                         break;
                     case 10://账号在其他设备登录被迫下线

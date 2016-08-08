@@ -17,7 +17,7 @@ import com.xiaomizuche.db.ConfigService;
 import java.util.Iterator;
 
 public class JCLocationManager implements LocationListener {
-    private static final String TAG = "ecar";
+    private static final String TAG = "JCSoft";
     private static JCLocationManager _instance = null;
     private Context _context = null;
     private LocationManager _locationManager = null;
@@ -113,10 +113,13 @@ public class JCLocationManager implements LocationListener {
     }
 
     public Location getCurrentLocation() {
-        if (_locationManager == null) {
-            return null;
+        Location location = null;
+        if (_locationManager != null) {
+            location = _locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location == null) {
+                location = _locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
         }
-        Location location = _locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         return location;
     }
 

@@ -161,6 +161,13 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //获取附近车辆接口
+    public static String arroundCar(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("map/arroundCar.do");
+        return sb.toString();
+    }
+
     //---------------------------------以上为小米租车------------------------------------------
 
 

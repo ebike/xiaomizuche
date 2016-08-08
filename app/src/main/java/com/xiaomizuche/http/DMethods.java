@@ -18,6 +18,8 @@ import org.xutils.http.RequestParams;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+
 public class DMethods {
 
     public static void backCar(final Context context, String force, final View.OnClickListener callback) {
@@ -33,6 +35,7 @@ public class DMethods {
                 }.getType());
                 if (responseBean.getCode() == 1) {
                     AppConfig.userInfoBean.setCarRecord(null);
+                    EventBus.getDefault().post(AppConfig.userInfoBean);
                     callback.onClick(null);
                 } else if (responseBean.getCode() == 2) {
                     CommonUtils.showCustomDialog0(context, "", "是否强制还车", new DSingleDialogCallback() {

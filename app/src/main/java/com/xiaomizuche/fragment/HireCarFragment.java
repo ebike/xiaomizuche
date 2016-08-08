@@ -51,6 +51,7 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
+import com.xiaomizuche.activity.AroundCarsActivity;
 import com.xiaomizuche.activity.BatteryActivity;
 import com.xiaomizuche.activity.HomeActivity;
 import com.xiaomizuche.activity.LoginActivity;
@@ -1215,6 +1216,11 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                 }
             });
         }
+    }
+
+    @Event(value = R.id.ll_around_car)
+    private void aroundCar(View view) {
+        startActivity(new Intent(getActivity(), AroundCarsActivity.class));
     }
 
     @Override

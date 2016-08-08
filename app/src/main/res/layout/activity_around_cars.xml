@@ -3,33 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.xiaomizuche.view.TopBarView
-        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:back_is_finish="true"
+        app:center_text="附近车辆"
         app:has_center="true"
         app:has_left="true"
         app:has_left_clickable="true"
         app:left_icon="@mipmap/icon_left_arrow" />
 
-    <com.xiaomizuche.view.XiuView
-        android:id="@+id/xv_execute"
+    <com.amap.api.maps.MapView
+        android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:id="@+id/tv_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:padding="16dp"
-        android:textColor="@color/gray_3"
-        android:textSize="14sp" />
-
+        android:layout_height="match_parent" />
 </LinearLayout>

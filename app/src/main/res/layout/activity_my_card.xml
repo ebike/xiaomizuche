@@ -33,8 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
             android:paddingBottom="6dp"
-            android:paddingRight="4dp"
-            android:text="NO.88888888"
+            android:paddingRight="12dp"
             android:textColor="#F5F0B3"
             android:textSize="10sp" />
     </FrameLayout>

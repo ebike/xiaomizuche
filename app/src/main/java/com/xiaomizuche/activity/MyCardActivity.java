@@ -29,6 +29,7 @@ public class MyCardActivity extends BaseActivity {
     @Override
     public void init() {
         if (AppConfig.userInfoBean != null) {
+            numberView.setText("NO." + AppConfig.userInfoBean.getUserId());
             dueTimeView.setText("到期时间：" + AppConfig.userInfoBean.getExpireTime());
         }
     }
