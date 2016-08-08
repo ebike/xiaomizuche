@@ -146,6 +146,21 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //根据手机号验证用户是否存在接口
+    public static String checkUserByPhone(String phone){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/checkUserByPhone.do");
+        sb.append("?phone=").append(phone);
+        return sb.toString();
+    }
+
+    //重置密码接口
+    public static String resetPassword(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/resetPassword.do");
+        return sb.toString();
+    }
+
     //---------------------------------以上为小米租车------------------------------------------
 
 

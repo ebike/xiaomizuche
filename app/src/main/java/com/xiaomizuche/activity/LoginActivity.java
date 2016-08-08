@@ -1,7 +1,6 @@
 package com.xiaomizuche.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,7 +17,6 @@ import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.callback.DCommonCallback;
-import com.xiaomizuche.callback.DSingleDialogCallback;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.event.FinishActivityEvent;
 import com.xiaomizuche.http.DHttpUtils;
@@ -58,6 +56,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     TextView registerTV;
     private String loginName;
     private String password;
+    private boolean goToHome;
 
     @Override
     public void loadXml() {
@@ -66,7 +65,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void getIntentData(Bundle savedInstanceState) {
-
+        goToHome = getIntent().getBooleanExtra("goToHome", false);
     }
 
     @Override
@@ -123,6 +122,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                             //注册极光推送别名
                             setAlias();
                             EventBus.getDefault().post(AppConfig.userInfoBean);
+                            if (goToHome) {
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            }
                             LoginActivity.this.finish();
                         } else {
                             showShortText(responseBean.getErrmsg());
@@ -134,18 +136,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
                 break;
             case R.id.tv_forget_password://忘记密码
-                CommonUtils.showCustomDialog3(this, "呼叫", "取消", "", "0531-67805000", new DSingleDialogCallback() {
-                    @Override
-                    public void onPositiveButtonClick(String editText) {
-                        // 用intent启动拨打电话
-                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:053167805000"));
-                        try {
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                startActivity(new Intent(LoginActivity.this, FindPasswordActivity.class));
                 break;
         }
     }
@@ -187,8 +178,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         finish();
     }
 
-    public void onEvent(FinishActivityEvent event){
-        if(event.isFinish() && event.getTarget().equals(this.getClass().getSimpleName())){
+    public void onEvent(FinishActivityEvent event) {
+        if (event.isFinish() && event.getTarget().equals(this.getClass().getSimpleName())) {
             finish();
         }
     }

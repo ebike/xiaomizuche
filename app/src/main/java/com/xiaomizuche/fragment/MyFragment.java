@@ -15,6 +15,8 @@ import com.xiaomizuche.R;
 import com.xiaomizuche.activity.AboutActivity;
 import com.xiaomizuche.activity.BaseInformationActivity;
 import com.xiaomizuche.activity.LoginActivity;
+import com.xiaomizuche.activity.ManageCardActivity;
+import com.xiaomizuche.activity.MyCardActivity;
 import com.xiaomizuche.activity.WebActivity;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.base.BaseFragment;
@@ -106,7 +108,11 @@ public class MyFragment extends BaseFragment {
 
     @Event(value = R.id.rev_car_card)
     private void carCard(View view) {
-
+        if (AppConfig.userInfoBean != null && AppConfig.userInfoBean.getVip() == 2) {
+            startActivity(new Intent(getActivity(), MyCardActivity.class));
+        } else {
+            startActivity(new Intent(getActivity(), ManageCardActivity.class));
+        }
     }
 
     @Event(value = R.id.rev_service)

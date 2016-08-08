@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/iv_password"
             android:layout_alignParentRight="true"
-            android:text="@string/forget_password" />
+            android:text="找回密码" />
 
         <EditText
             android:id="@+id/et_password"

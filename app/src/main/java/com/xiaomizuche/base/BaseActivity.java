@@ -244,6 +244,7 @@ public abstract class BaseActivity extends FragmentActivity {
                         AppConfig.isExecuteVF = null;
                         SPUtils.clear(BaseActivity.this);
                         Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
+                        intent.putExtra("goToHome", true);
                         startActivity(intent);
                         EventBus.getDefault().post(new FinishActivityEvent(true, "BaseActivity"));
                     } else {

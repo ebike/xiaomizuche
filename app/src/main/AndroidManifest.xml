@@ -245,6 +245,13 @@
         <activity
             android:name=".activity.BatteryActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FindPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.UpdatePasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.MyCardActivity"></activity>
     </application>
 
 </manifest>

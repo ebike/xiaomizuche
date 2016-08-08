@@ -142,26 +142,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     ImageView batteryView;
     @ViewInject(R.id.iv_nav)
     ImageView navImageView;
-    @ViewInject(R.id.tv_satellite)
-    TextView satelliteTextView;
-    @ViewInject(R.id.tv_plane)
-    TextView planeTextView;
-    @ViewInject(R.id.tv_equipment_serial_number)
-    TextView equipmentSerialNumberTextView;
-    @ViewInject(R.id.tv_positioning_state)
-    TextView positioningStateTextView;
-    @ViewInject(R.id.tv_online_status)
-    TextView onlineStatusTextView;
-    @ViewInject(R.id.tv_acc)
-    TextView accTextView;
-    @ViewInject(R.id.tv_main_power)
-    TextView mainPowerTextView;
-    @ViewInject(R.id.tv_lock_car_status)
-    TextView lockCarStatusTextView;
-    @ViewInject(R.id.tv_direction)
-    TextView directionTextView;
-    @ViewInject(R.id.tv_address)
-    TextView addressTextView;
+
     //轨迹查询时间布局
     LinearLayout dateLayout;
     //轨迹查询开始时间
@@ -186,9 +167,19 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     private boolean isOpenTraffic;
     //地图类型选择窗口
     private View mapTypeView;
+    TextView satelliteTextView;
+    TextView planeTextView;
     private PopupWindow popupWindow;
     //车辆信息
     private View carStatusView;
+    TextView equipmentSerialNumberTextView;
+    TextView positioningStateTextView;
+    TextView onlineStatusTextView;
+    TextView accTextView;
+    TextView mainPowerTextView;
+    TextView lockCarStatusTextView;
+    TextView directionTextView;
+    TextView addressTextView;
     private PopupWindow carPopupWindow;
     //其他
     private MediaPlayer _dingPlayer = null;
@@ -212,11 +203,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hire_car, container, false);
         x.view().inject(this, view);
-        mapTypeView = inflater.inflate(R.layout.popupwindow_map_type, null, false);
-        x.view().inject(this, mapTypeView);
-        carStatusView = inflater.inflate(R.layout.popupwindow_car_status, null, false);
-        carStatusView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        x.view().inject(this, carStatusView);
+        initMapType(inflater);
+        initCarStatus(inflater);
         mapView.onCreate(savedInstanceState);
         init();
         setListeners();
@@ -246,6 +234,25 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
         mapNavi = AMapNavi.getInstance(getActivity());
         mapNavi.setAMapNaviListener(ttsManager);// 设置语音模块播报
         mapNavi.setAMapNaviListener(this);
+    }
+
+    private void initMapType(LayoutInflater inflater) {
+        mapTypeView = inflater.inflate(R.layout.popupwindow_map_type, null, false);
+        satelliteTextView = (TextView) mapTypeView.findViewById(R.id.tv_satellite);
+        planeTextView = (TextView) mapTypeView.findViewById(R.id.tv_plane);
+    }
+
+    private void initCarStatus(LayoutInflater inflater) {
+        carStatusView = inflater.inflate(R.layout.popupwindow_car_status, null, false);
+        carStatusView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        equipmentSerialNumberTextView = (TextView) carStatusView.findViewById(R.id.tv_equipment_serial_number);
+        positioningStateTextView = (TextView) carStatusView.findViewById(R.id.tv_positioning_state);
+        onlineStatusTextView = (TextView) carStatusView.findViewById(R.id.tv_online_status);
+        accTextView = (TextView) carStatusView.findViewById(R.id.tv_acc);
+        mainPowerTextView = (TextView) carStatusView.findViewById(R.id.tv_main_power);
+        lockCarStatusTextView = (TextView) carStatusView.findViewById(R.id.tv_lock_car_status);
+        directionTextView = (TextView) carStatusView.findViewById(R.id.tv_direction);
+        addressTextView = (TextView) carStatusView.findViewById(R.id.tv_address);
     }
 
     //设置地图中心点
@@ -296,6 +303,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             if (hasTrack) {
                 aMap.clear();
             }
+            hireCarLayout.setVisibility(View.GONE);
+            locationLayout.setVisibility(View.VISIBLE);
             RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getLocInfoUrl());
             DHttpUtils.get_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
                 @Override
@@ -1162,8 +1171,6 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
 
     public void onEvent(UserInfoBean bean) {
         if (AppConfig.userInfoBean != null && AppConfig.userInfoBean.getCarRecord() != null) {
-            hireCarLayout.setVisibility(View.GONE);
-            locationLayout.setVisibility(View.VISIBLE);
             requestDatas();
         } else {
             hireCarLayout.setVisibility(View.VISIBLE);
