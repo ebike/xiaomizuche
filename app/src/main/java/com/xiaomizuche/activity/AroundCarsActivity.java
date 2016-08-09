@@ -19,8 +19,6 @@ import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.CarLocationBean;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.callback.DCommonCallback;
-import com.xiaomizuche.constants.JCConstValues;
-import com.xiaomizuche.db.ConfigService;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
@@ -30,6 +28,7 @@ import com.xiaomizuche.utils.T;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ViewInject;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,33 +66,8 @@ public class AroundCarsActivity extends BaseActivity {
         JCLocationManager.instance().init(this);
         JCLocationManager.instance().start();
         Location location = JCLocationManager.instance().getCurrentLocation();
-//        LatLonPoint startPoint = new LatLonPoint(location.getLatitude(), location.getLongitude());
         LatLng curPosition = new LatLng(location.getLatitude(), location.getLongitude());
         CameraPosition cp = new CameraPosition(curPosition, 17, 0, 0);
-        CameraUpdate center = CameraUpdateFactory.newCameraPosition(cp);
-//        aMap.moveCamera(center);
-        moveToCenter("36.682093", "117.123676");
-    }
-
-    private void moveToCenter(String lat, String lng) {
-        String centerLatLng = ConfigService.instance().getConfigValue(
-                JCConstValues.S_CenterLngLat);
-        if (centerLatLng.length() == 0) {
-            centerLatLng = lat + "," + lng;
-            ConfigService.instance().insertConfigValue(
-                    JCConstValues.S_CenterLngLat, centerLatLng);
-        }
-        String[] latlngArr = centerLatLng.split(",");
-        if (latlngArr.length < 2) {
-            latlngArr[0] = lat;
-            latlngArr[1] = lng;
-            centerLatLng = lat + "," + lng;
-            ConfigService.instance().insertConfigValue(
-                    JCConstValues.S_CenterLngLat, centerLatLng);
-        }
-        CameraPosition cp = new CameraPosition(
-                new LatLng(Double.valueOf(latlngArr[0]),
-                        Double.valueOf(latlngArr[1])), 17, 0, 0);
         CameraUpdate center = CameraUpdateFactory.newCameraPosition(cp);
         aMap.moveCamera(center);
     }
@@ -129,16 +103,20 @@ public class AroundCarsActivity extends BaseActivity {
 
     @Override
     public void setData() {
+        DecimalFormat format = new DecimalFormat("0");
+        Location location = JCLocationManager.instance().getCurrentLocation();
         Map<String, String> map = new HashMap<>();
-        map.put("lon", "117123676");
-        map.put("lat", "36682093");
+        map.put("lon", format.format(location.getLongitude() * 1000000));
+        map.put("lat", format.format(location.getLatitude() * 1000000));
         RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.arroundCar(), map);
         DHttpUtils.post_String(this, true, params, new DCommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 ResponseBean<List<CarLocationBean>> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<List<CarLocationBean>>>() {
                 }.getType());
-                if (responseBean.getCode() == 1) {
+                if (responseBean.getCode() == 1
+                        && responseBean.getData() != null
+                        && responseBean.getData().size() > 0) {
                     carLocationList = responseBean.getData();
                     initCar();
                 } else {

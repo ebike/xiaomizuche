@@ -177,6 +177,28 @@ public class CommonUtils {
         return DateToString(date, DATE_YEAR_MONTH_DAY_CH);
     }
 
+    //倒计时
+    public static String DateMinus(String time) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date d1 = df.parse(time);
+            Date curDate = new Date(System.currentTimeMillis());
+            long diff = d1.getTime() - curDate.getTime();
+
+            long days = diff / (1000 * 60 * 60 * 24);
+            long hours = (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+            long minutes = (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60)) / (1000 * 60);
+
+            if ("0".equals(days + "")) {
+                return hours + "小时" + minutes + "分";
+            } else {
+                return days + "天" + hours + "小时" + minutes + "分";
+            }
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     //时间差大于一周
     public static boolean moreThanAWeek(String start, String end) {
         try {
@@ -355,11 +377,11 @@ public class CommonUtils {
                 .setContentTitle(title) //标题
                 .setContentText(content)         //正文
                 .setNumber(1)                       //设置信息条数
-                        //.setContentInfo("3")        //作用同上，设置信息的条数
-                        // .setLargeIcon(smallicon)           //largeicon，
+                //.setContentInfo("3")        //作用同上，设置信息的条数
+                // .setLargeIcon(smallicon)           //largeicon，
 
                 .setDefaults(noticeType)//设置声音，此为默认声音
-                        //.setVibrate(vT) //设置震动，此震动数组为：long vT[]={300,100,300,100}; 还可以设置灯光.setLights(argb, onMs, offMs)
+                //.setVibrate(vT) //设置震动，此震动数组为：long vT[]={300,100,300,100}; 还可以设置灯光.setLights(argb, onMs, offMs)
                 .setOngoing(false)      //true使notification变为ongoing，用户不能手动清除，类似QQ,false或者不设置则为普通的通知
                 .setAutoCancel(true);//点击之后自动消失
         Intent resultIntent = new Intent(context, clazz);

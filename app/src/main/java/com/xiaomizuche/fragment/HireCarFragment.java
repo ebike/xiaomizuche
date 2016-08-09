@@ -55,7 +55,6 @@ import com.xiaomizuche.activity.AroundCarsActivity;
 import com.xiaomizuche.activity.BatteryActivity;
 import com.xiaomizuche.activity.HomeActivity;
 import com.xiaomizuche.activity.LoginActivity;
-import com.xiaomizuche.activity.RemoteControlActivity;
 import com.xiaomizuche.activity.SimpleNaviActivity;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.base.BaseFragment;
@@ -83,6 +82,7 @@ import com.xiaomizuche.utils.MapUtils;
 import com.xiaomizuche.utils.T;
 import com.xiaomizuche.utils.Utils;
 import com.xiaomizuche.view.CustomDialog;
+import com.xiaomizuche.view.TopBarView;
 import com.xiaomizuche.view.formview.FormTextDateTimeView;
 import com.xiaomizuche.view.formview.FormViewUtils;
 
@@ -108,6 +108,8 @@ import de.greenrobot.event.EventBus;
 public class HireCarFragment extends BaseFragment implements TextWatcher, Runnable, View.OnClickListener,
         AMap.OnMapClickListener, AMapNaviListener, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, GeocodeSearch.OnGeocodeSearchListener {
 
+    @ViewInject(R.id.top_bar_view)
+    TopBarView topBarView;
     @ViewInject(R.id.fl_location)
     FrameLayout locationLayout;
     @ViewInject(R.id.ll_hire_car)
@@ -124,6 +126,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     EditText validatecodeText;
     @ViewInject(R.id.v_line_validatecode)
     View validatecodeLine;
+    @ViewInject(R.id.tv_lock)
+    TextView lockView;
 
     @ViewInject(R.id.map_view)
     MapView mapView;
@@ -131,8 +135,6 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     ImageView trafficImageView;
     @ViewInject(R.id.iv_map_type)
     ImageView mapTypeImageView;
-    @ViewInject(R.id.iv_lock)
-    ImageView lockImageView;
     @ViewInject(R.id.iv_trajectory)
     ImageView trajectoryImageView;
     @ViewInject(R.id.iv_fence)
@@ -173,6 +175,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     private PopupWindow popupWindow;
     //车辆信息
     private View carStatusView;
+    TextView startTimeView;
+    TextView expireTimeView;
     TextView equipmentSerialNumberTextView;
     TextView positioningStateTextView;
     TextView onlineStatusTextView;
@@ -199,6 +203,10 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     private View chooseNavView;
     private TextView driveView;
     private TextView walkView;
+
+    private Handler countHandler;
+    private Runnable runnable;
+    private int minute = 60;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -246,6 +254,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     private void initCarStatus(LayoutInflater inflater) {
         carStatusView = inflater.inflate(R.layout.popupwindow_car_status, null, false);
         carStatusView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        startTimeView = (TextView) carStatusView.findViewById(R.id.tv_start_time);
+        expireTimeView = (TextView) carStatusView.findViewById(R.id.tv_expire_time);
         equipmentSerialNumberTextView = (TextView) carStatusView.findViewById(R.id.tv_equipment_serial_number);
         positioningStateTextView = (TextView) carStatusView.findViewById(R.id.tv_positioning_state);
         onlineStatusTextView = (TextView) carStatusView.findViewById(R.id.tv_online_status);
@@ -283,7 +293,6 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     private void setListeners() {
         trafficImageView.setOnClickListener(this);
         mapTypeImageView.setOnClickListener(this);
-        lockImageView.setOnClickListener(this);
         trajectoryImageView.setOnClickListener(this);
         fenceImageView.setOnClickListener(this);
         navImageView.setOnClickListener(this);
@@ -293,6 +302,19 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
         batteryView.setOnClickListener(this);
         carIdText.addTextChangedListener(this);
         validatecodeText.addTextChangedListener(this);
+    }
+
+    private void showCountDown() {
+        countHandler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                topBarView.setRightTextView(CommonUtils.DateMinus(AppConfig.userInfoBean.getCarRecord().getExpectEndTime()));
+                countHandler.postDelayed(this, 60 * 1000);
+            }
+        };
+
+        countHandler.postDelayed(runnable, 0);
     }
 
     @Override
@@ -306,6 +328,9 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             }
             hireCarLayout.setVisibility(View.GONE);
             locationLayout.setVisibility(View.VISIBLE);
+            showCountDown();
+            startTimeView.setText(AppConfig.userInfoBean.getCarRecord().getStartTime());
+            expireTimeView.setText(AppConfig.userInfoBean.getCarRecord().getExpectEndTime());
             RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getLocInfoUrl());
             DHttpUtils.get_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
                 @Override
@@ -342,26 +367,10 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                             if (AppConfig.isExecuteLock == null) {
                                 if (locInfoBean.getLock().equals("1")) {
                                     AppConfig.isLock = true;
-                                    if (locInfoBean.getControlType() != null
-                                            && locInfoBean.getControlType().equals("2")) {
-                                        lockImageView.setImageResource(R.mipmap.icon_map_sound_open);
-                                    } else if (locInfoBean.getControlType() != null
-                                            && locInfoBean.getControlType().equals("3")) {
-                                        lockImageView.setImageResource(R.mipmap.icon_map_onkey_start);
-                                    } else {
-                                        lockImageView.setImageResource(R.mipmap.icon_map_lock_close);
-                                    }
+                                    lockView.setText("解锁");
                                 } else {
                                     AppConfig.isLock = false;
-                                    if (locInfoBean.getControlType() != null
-                                            && locInfoBean.getControlType().equals("2")) {
-                                        lockImageView.setImageResource(R.mipmap.icon_map_sound_close);
-                                    } else if (locInfoBean.getControlType() != null
-                                            && locInfoBean.getControlType().equals("3")) {
-                                        lockImageView.setImageResource(R.mipmap.icon_map_onkey_start);
-                                    } else {
-                                        lockImageView.setImageResource(R.mipmap.icon_map_lock_open);
-                                    }
+                                    lockView.setText("锁车");
                                 }
                             }
                             //判断电子围栏
@@ -423,6 +432,11 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                     }
                 }
             });
+        } else {
+            topBarView.setRightTextView("");
+            if (countHandler != null) {
+                countHandler.removeCallbacks(runnable);
+            }
         }
     }
 
@@ -499,12 +513,6 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             case R.id.tv_plane://平面图
                 aMap.setMapType(AMap.MAP_TYPE_NORMAL);
                 changeMapType(AMap.MAP_TYPE_NORMAL);
-                break;
-            case R.id.iv_lock://语音锁车/解锁
-                Intent intent = new Intent(getActivity(), RemoteControlActivity.class);
-                intent.putExtra("isLock", locInfoBean.getLock());
-                intent.putExtra("controlType", locInfoBean.getControlType());
-                startActivity(intent);
                 break;
             case R.id.iv_trajectory://轨迹
                 //选择时间弹出框
@@ -776,28 +784,12 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
         if (event != null) {
             AppConfig.isExecuteLock = null;
             if (event.getIsLock().equals("1")) {
-                if (locInfoBean.getControlType() != null
-                        && locInfoBean.getControlType().equals("2")) {
-                    lockImageView.setImageResource(R.mipmap.icon_map_sound_open);
-                } else if (locInfoBean.getControlType() != null
-                        && locInfoBean.getControlType().equals("3")) {
-                    lockImageView.setImageResource(R.mipmap.icon_map_onkey_start);
-                } else {
-                    lockImageView.setImageResource(R.mipmap.icon_map_lock_close);
-                }
                 AppConfig.isLock = true;
+                lockView.setText("解锁");
                 showShortText(event.getMsg());
             } else {
-                if (locInfoBean.getControlType() != null
-                        && locInfoBean.getControlType().equals("2")) {
-                    lockImageView.setImageResource(R.mipmap.icon_map_sound_close);
-                } else if (locInfoBean.getControlType() != null
-                        && locInfoBean.getControlType().equals("3")) {
-                    lockImageView.setImageResource(R.mipmap.icon_map_onkey_start);
-                } else {
-                    lockImageView.setImageResource(R.mipmap.icon_map_lock_open);
-                }
                 AppConfig.isLock = false;
+                lockView.setText("锁车");
                 showShortText(event.getMsg());
             }
         }
@@ -1201,8 +1193,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                     }.getType());
                     if (responseBean.getCode() == 1) {
                         AppConfig.userInfoBean.setCarRecord(responseBean.getData());
-                        hireCarLayout.setVisibility(View.GONE);
-                        locationLayout.setVisibility(View.VISIBLE);
+                        EventBus.getDefault().post(AppConfig.userInfoBean);
                     } else {
                         T.showShort(getActivity(), responseBean.getErrmsg());
                     }
@@ -1221,6 +1212,56 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     @Event(value = R.id.ll_around_car)
     private void aroundCar(View view) {
         startActivity(new Intent(getActivity(), AroundCarsActivity.class));
+    }
+
+    @Event(value = R.id.tv_back_car)
+    private void backCar(View view) {
+        //判断是否登录状态
+        if (AppConfig.userInfoBean != null) {
+            if (AppConfig.userInfoBean.getCarRecord() != null) {
+                CommonUtils.backCar(getActivity(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        T.showShort(getActivity(), "还车成功");
+                    }
+                });
+            } else {
+                T.showShort(getActivity(), "您没有租车");
+            }
+        } else {
+            T.showShort(getActivity(), "请您先登录账号，再进行还车");
+        }
+    }
+
+    @Event(value = R.id.tv_lock)
+    private void lock(View view) {
+        if (locInfoBean.getLock().equals("1")) {
+            RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getUnLockBikeUrl("0"));
+            DHttpUtils.get_String((HomeActivity) getActivity(), false, params, new DCommonCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    ResponseBean<String> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<String>>() {
+                    }.getType());
+                    if (responseBean != null) {
+                        AppConfig.isExecuteLock = 0;
+                        showShortText(responseBean.getErrmsg());
+                    }
+                }
+            });
+        } else {
+            RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.getlockBikeUrl("0"));
+            DHttpUtils.get_String((HomeActivity) getActivity(), false, params, new DCommonCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    ResponseBean<String> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<String>>() {
+                    }.getType());
+                    if (responseBean != null) {
+                        AppConfig.isExecuteLock = 1;
+                        showShortText(responseBean.getErrmsg());
+                    }
+                }
+            });
+        }
     }
 
     @Override

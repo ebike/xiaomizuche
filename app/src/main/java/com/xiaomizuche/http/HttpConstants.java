@@ -168,6 +168,13 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //获取租车卡年费接口
+    public static String getVipYearPrice(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("user/getVipYearPrice.do");
+        return sb.toString();
+    }
+
     //---------------------------------以上为小米租车------------------------------------------
 
 

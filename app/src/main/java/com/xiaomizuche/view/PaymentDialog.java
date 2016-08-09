@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xiaomizuche.R;
@@ -23,6 +21,7 @@ public class PaymentDialog implements OnClickListener {
     private Context context;
     private Display display;
     private Dialog dialog;
+    private TextView feeView;
     private ImageView wxpayView;
     private ImageView alipayView;
     private ImageView unionpayView;
@@ -38,6 +37,7 @@ public class PaymentDialog implements OnClickListener {
         //初始化显示的view
         View view = LayoutInflater.from(context).inflate(
                 R.layout.view_payment_dialog, null);
+        feeView = (TextView) view.findViewById(R.id.tv_fee);
         wxpayView = (ImageView) view.findViewById(R.id.iv_wxpay);
         alipayView = (ImageView) view.findViewById(R.id.iv_alipay);
         unionpayView = (ImageView) view.findViewById(R.id.iv_unionpay);
@@ -89,6 +89,10 @@ public class PaymentDialog implements OnClickListener {
             default:
                 break;
         }
+    }
+
+    public void setFee(String fee) {
+        feeView.setText("支付年费:￥" + fee);
     }
 
 }
