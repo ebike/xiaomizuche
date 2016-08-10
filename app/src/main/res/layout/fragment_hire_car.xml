@@ -123,7 +123,7 @@
                     style="@style/white_14"
                     android:layout_marginRight="32dp"
                     android:background="@drawable/bg_orange"
-                    android:drawableLeft="@mipmap/point"
+                    android:drawableLeft="@mipmap/icon_unlock"
                     android:drawablePadding="4dp"
                     android:text="解锁" />
 
@@ -131,7 +131,7 @@
                     android:id="@+id/tv_back_car"
                     style="@style/orange_14"
                     android:background="@drawable/bg_white"
-                    android:drawableLeft="@mipmap/point"
+                    android:drawableLeft="@mipmap/icon_back_car"
                     android:drawablePadding="4dp"
                     android:text="还车" />
 

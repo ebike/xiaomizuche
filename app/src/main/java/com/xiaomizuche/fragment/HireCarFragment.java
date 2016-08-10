@@ -368,9 +368,15 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                                 if (locInfoBean.getLock().equals("1")) {
                                     AppConfig.isLock = true;
                                     lockView.setText("解锁");
+                                    Drawable drawable = getResources().getDrawable(R.mipmap.icon_unlock);
+                                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                                    lockView.setCompoundDrawables(drawable, null, null, null);
                                 } else {
                                     AppConfig.isLock = false;
                                     lockView.setText("锁车");
+                                    Drawable drawable = getResources().getDrawable(R.mipmap.icon_lock);
+                                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                                    lockView.setCompoundDrawables(drawable, null, null, null);
                                 }
                             }
                             //判断电子围栏
@@ -786,10 +792,16 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             if (event.getIsLock().equals("1")) {
                 AppConfig.isLock = true;
                 lockView.setText("解锁");
+                Drawable drawable = getResources().getDrawable(R.mipmap.icon_unlock);
+                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                lockView.setCompoundDrawables(drawable, null, null, null);
                 showShortText(event.getMsg());
             } else {
                 AppConfig.isLock = false;
                 lockView.setText("锁车");
+                Drawable drawable = getResources().getDrawable(R.mipmap.icon_lock);
+                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                lockView.setCompoundDrawables(drawable, null, null, null);
                 showShortText(event.getMsg());
             }
         }
