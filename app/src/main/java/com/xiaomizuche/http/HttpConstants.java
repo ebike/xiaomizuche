@@ -8,7 +8,7 @@ import com.xiaomizuche.constants.AppConfig;
 public class HttpConstants {
 
     //接口前缀
-    public static String baseUrl = "http://www.gnets.cn:8088/xmzc_api/app/";
+    public static String baseUrl = "http://api.xiaomiddc.com/app/";
 
     //登录
     public static String getLoginUrl() {

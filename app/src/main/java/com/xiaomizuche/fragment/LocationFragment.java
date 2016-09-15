@@ -87,7 +87,6 @@ import de.greenrobot.event.EventBus;
 
 /**
  * 卫星定位
- * Created by jimmy on 15/12/28.
  */
 public class LocationFragment extends BaseFragment implements Runnable, View.OnClickListener,
         AMap.OnMapClickListener, AMapNaviListener, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, GeocodeSearch.OnGeocodeSearchListener {

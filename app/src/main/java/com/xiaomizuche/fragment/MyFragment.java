@@ -78,6 +78,8 @@ public class MyFragment extends BaseFragment {
             dateLayout.setVisibility(View.VISIBLE);
             Glide.with(getActivity())
                     .load(AppConfig.userInfoBean.getHeadPic())
+                    .placeholder(R.mipmap.icon_default_head)
+                    .error(R.mipmap.icon_default_head)
                     .bitmapTransform(new CropCircleTransformation(getActivity()))
                     .into(headerView);
             if (!CommonUtils.strIsEmpty(AppConfig.userInfoBean.getUserName())) {
