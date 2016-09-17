@@ -10,7 +10,7 @@
         android:id="@+id/top_bar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:center_text="小米租车"
+        app:center_text="共享电动车"
         app:has_center="true"
         app:has_right="true"
         app:has_right_clickable="true"

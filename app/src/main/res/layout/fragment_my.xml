@@ -138,7 +138,7 @@
 
         <TextView
             style="@style/gray3_16"
-            android:drawableLeft="@mipmap/icon_code"
+            android:drawableLeft="@mipmap/icon_logout"
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="退出登录" />

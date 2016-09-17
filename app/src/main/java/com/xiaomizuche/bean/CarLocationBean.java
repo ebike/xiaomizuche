@@ -9,6 +9,7 @@ public class CarLocationBean {
     private int lon;
     private int lat;
     private String carportName;
+    private String distance;
 
     public CarLocationBean() {
     }
@@ -43,5 +44,13 @@ public class CarLocationBean {
 
     public String getCarportName() {
         return carportName;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }

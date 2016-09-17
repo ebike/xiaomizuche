@@ -55,6 +55,7 @@ import com.xiaomizuche.activity.AroundCarsActivity;
 import com.xiaomizuche.activity.BatteryActivity;
 import com.xiaomizuche.activity.HomeActivity;
 import com.xiaomizuche.activity.LoginActivity;
+import com.xiaomizuche.activity.ManageCardActivity;
 import com.xiaomizuche.activity.SimpleNaviActivity;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.base.BaseFragment;
@@ -110,6 +111,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
 
     @ViewInject(R.id.top_bar_view)
     TopBarView topBarView;
+    @ViewInject(R.id.tv_expire)
+    TextView expireView;
     @ViewInject(R.id.fl_location)
     FrameLayout locationLayout;
     @ViewInject(R.id.ll_hire_car)
@@ -440,10 +443,24 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             });
         } else {
             topBarView.setRightTextView("");
+            hireCarLayout.setVisibility(View.VISIBLE);
+            locationLayout.setVisibility(View.GONE);
+            if (AppConfig.userInfoBean != null
+                    && !CommonUtils.strIsEmpty(AppConfig.userInfoBean.getExpireTime())
+                    && CommonUtils.moreThanToday(AppConfig.userInfoBean.getExpireTime())) {
+                expireView.setVisibility(View.VISIBLE);
+            } else {
+                expireView.setVisibility(View.INVISIBLE);
+            }
             if (countHandler != null) {
                 countHandler.removeCallbacks(runnable);
             }
         }
+    }
+
+    @Event(value = R.id.tv_expire)
+    private void expire(View v) {
+        startActivity(new Intent(getActivity(), ManageCardActivity.class));
     }
 
     /**

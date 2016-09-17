@@ -55,7 +55,7 @@ public class HomeFragment extends BaseFragment {
             });
         }
 
-        webView.loadUrl("http://www.gnets.cn:8088/xmzc_api/app/h5/service_descrip.html");
+        webView.loadUrl("http://api.xiaomiddc.com/app/h5/service_descrip.html");
         // 覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
         webView.setWebViewClient(new WebViewClient() {
             @Override

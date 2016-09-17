@@ -53,5 +53,6 @@
 
     <color name="green">#3aab3d</color>
     <color name="red">#ff0000</color>
+    <color name="red1">#F44336</color>
 
 </resources>

@@ -14,6 +14,7 @@ import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
+import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.view.TopBarView;
 
 import org.xutils.http.RequestParams;
@@ -43,6 +44,9 @@ public class UpdateTextValueActivity extends BaseActivity {
         fieldName_CH = getIntent().getStringExtra("fieldName_CH");
         fieldValue = getIntent().getStringExtra("fieldValue");
         fieldName = getIntent().getStringExtra("fieldName");
+        if (CommonUtils.strIsEmpty(fieldValue)) {
+            fieldValue = "";
+        }
     }
 
     @Override

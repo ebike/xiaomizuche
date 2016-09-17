@@ -47,7 +47,6 @@ import java.util.regex.Pattern;
 
 /**
  * 公共方法的处理类
- * Created by dive on 2015/07/11.
  */
 public class CommonUtils {
     // 默认日期转换格式
@@ -210,6 +209,24 @@ public class CommonUtils {
             long timeDifference = t2 - t1;
             long week = 7 * 24 * 60 * 60 * 1000;
             if (timeDifference > week) {
+                return true;
+            }
+            return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    //日期是否超过今天
+    public static boolean moreThanToday(String date) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+            Date todayDate = new Date();
+            Date dDate = df.parse(date);
+            long t1 = todayDate.getTime();
+            long t2 = dDate.getTime();
+            if (t1 > t2) {
                 return true;
             }
             return false;
