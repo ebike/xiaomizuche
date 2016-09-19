@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias '小米租车'
+            keyPassword 'jcsoft2014'
+            storeFile file('../zuche.jks')
+            storePassword 'jcsoft2014'
+        }
+    }
+
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
@@ -10,6 +19,8 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        signingConfig signingConfigs.config
+        multiDexEnabled true
     }
     sourceSets {
         main {
@@ -17,6 +28,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

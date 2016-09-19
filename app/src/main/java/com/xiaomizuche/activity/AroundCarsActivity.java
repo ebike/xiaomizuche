@@ -1,6 +1,5 @@
 package com.xiaomizuche.activity;
 
-import android.location.Location;
 import android.os.Bundle;
 
 import com.amap.api.location.AMapLocation;
@@ -8,14 +7,13 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.google.gson.Gson;
@@ -28,7 +26,6 @@ import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.http.DHttpUtils;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
-import com.xiaomizuche.map.JCLocationManager;
 import com.xiaomizuche.utils.T;
 
 import org.xutils.http.RequestParams;
@@ -56,6 +53,7 @@ public class AroundCarsActivity extends BaseActivity
     public AMapLocationClient mlocationClient = null;
     //声明mLocationOption对象
     public AMapLocationClientOption mLocationOption = null;
+    private boolean isExecuted;
 
     @Override
     public void loadXml() {
@@ -73,25 +71,18 @@ public class AroundCarsActivity extends BaseActivity
             aMap = mapView.getMap();
             aMap.setOnMarkerClickListener(this);
             aMap.setOnInfoWindowClickListener(this);
-            aMap.setLocationSource(this);// 设置定位监听
-            aMap.setMyLocationEnabled(true);// 可触发定位并显示定位层
+            // 设置定位监听
+            aMap.setLocationSource(this);
+            // 可触发定位并显示定位层
+            aMap.setMyLocationEnabled(true);
             uiSettings = aMap.getUiSettings();
             //不显示缩放按键
             uiSettings.setZoomControlsEnabled(false);
             //显示比例尺
             uiSettings.setScaleControlsEnabled(true);
-            uiSettings.setMyLocationButtonEnabled(true); // 显示默认的定位按钮
+            // 显示默认的定位按钮
+            uiSettings.setMyLocationButtonEnabled(true);
         }
-
-        // 自定义系统定位小蓝点
-//        MyLocationStyle myLocationStyle = new MyLocationStyle();
-//        myLocationStyle.myLocationIcon(BitmapDescriptorFactory
-//                .fromResource(R.drawable.location_marker));// 设置小蓝点的图标
-//
-//        myLocationStyle.strokeColor(Color.BLACK);// 设置圆形的边框颜色
-//        myLocationStyle.radiusFillColor(Color.argb(100, 0, 0, 180));// 设置圆形的填充颜色
-//        myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
-//        aMap.setMyLocationStyle(myLocationStyle);
 
         mlocationClient = new AMapLocationClient(this);
         //初始化定位参数
@@ -110,15 +101,6 @@ public class AroundCarsActivity extends BaseActivity
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
         mlocationClient.startLocation();
-
-        JCLocationManager.instance().init(this);
-        JCLocationManager.instance().start();
-        Location location = JCLocationManager.instance().getCurrentLocation();
-//        LatLng curPosition = new LatLng(location.getLatitude(), location.getLongitude());
-        LatLng curPosition = new LatLng(36.686678, 117.131284);
-        CameraPosition cp = new CameraPosition(curPosition, 17, 0, 0);
-        CameraUpdate center = CameraUpdateFactory.newCameraPosition(cp);
-        aMap.moveCamera(center);
     }
 
     @Override
@@ -142,6 +124,15 @@ public class AroundCarsActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (null != mlocationClient) {
+            /**
+             * 如果AMapLocationClient是在当前Activity实例化的，
+             * 在Activity的onDestroy中一定要执行AMapLocationClient的onDestroy
+             */
+            mlocationClient.onDestroy();
+            mlocationClient = null;
+            mLocationOption = null;
+        }
         mapView.onDestroy();
     }
 
@@ -152,33 +143,12 @@ public class AroundCarsActivity extends BaseActivity
 
     @Override
     public void setData() {
-        DecimalFormat format = new DecimalFormat("0");
-        Location location = JCLocationManager.instance().getCurrentLocation();
-        Map<String, String> map = new HashMap<>();
-//        map.put("lon", format.format(location.getLongitude() * 1000000));
-//        map.put("lat", format.format(location.getLatitude() * 1000000));
-        map.put("lon", format.format(117131284));
-        map.put("lat", format.format(36686678));
-        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.arroundCar(), map);
-        DHttpUtils.post_String(this, true, params, new DCommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                ResponseBean<List<CarLocationBean>> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<List<CarLocationBean>>>() {
-                }.getType());
-                if (responseBean.getCode() == 1
-                        && responseBean.getData() != null
-                        && responseBean.getData().size() > 0) {
-                    carLocationList = responseBean.getData();
-                    initCar();
-                } else {
-                    T.showShort(AroundCarsActivity.this, responseBean.getErrmsg());
-                }
-            }
-        });
+
     }
 
     private void initCar() {
         if (carLocationList != null && carLocationList.size() > 0) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (CarLocationBean bean : carLocationList) {
                 //添加障碍物
                 MarkerOptions markerOptions = new MarkerOptions();
@@ -188,7 +158,11 @@ public class AroundCarsActivity extends BaseActivity
                 markerOptions.perspective(true);
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.icon_ebike_offline));
                 aMap.addMarker(markerOptions);
+
+                builder.include(position);
             }
+            LatLngBounds bounds = builder.build();
+            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
         }
     }
 
@@ -214,11 +188,6 @@ public class AroundCarsActivity extends BaseActivity
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {
-            if (mListener != null) {
-                amapLocation.setLatitude(36.686678);
-                amapLocation.setLongitude(117.131284);
-                mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
-            }
             if (amapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
                 amapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
@@ -228,10 +197,43 @@ public class AroundCarsActivity extends BaseActivity
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(amapLocation.getTime());
                 df.format(date);//定位时间
+                if (!isExecuted) {
+                    isExecuted = true;
+                    aMap.moveCamera(CameraUpdateFactory.zoomTo(16));
+                    getCarInfo(amapLocation.getLongitude(), amapLocation.getLatitude());
+                    LatLng curPosition = new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude());
+                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(curPosition));
+                }
+                if (mListener != null) {
+                    mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
+                }
             } else {
-                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
+                T.showShort(this, "定位失败");
             }
         }
+    }
+
+    private void getCarInfo(double longitude, double latitude) {
+        DecimalFormat format = new DecimalFormat("0");
+        Map<String, String> map = new HashMap<>();
+        map.put("lon", format.format(longitude * 1000000));
+        map.put("lat", format.format(latitude * 1000000));
+        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.arroundCar(), map);
+        DHttpUtils.post_String(this, false, params, new DCommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ResponseBean<List<CarLocationBean>> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<List<CarLocationBean>>>() {
+                }.getType());
+                if (responseBean.getCode() == 1
+                        && responseBean.getData() != null
+                        && responseBean.getData().size() > 0) {
+                    carLocationList = responseBean.getData();
+                    initCar();
+                } else {
+                    T.showShort(AroundCarsActivity.this, responseBean.getErrmsg());
+                }
+            }
+        });
     }
 
     /**
@@ -249,4 +251,5 @@ public class AroundCarsActivity extends BaseActivity
     public void deactivate() {
         mListener = null;
     }
+
 }
