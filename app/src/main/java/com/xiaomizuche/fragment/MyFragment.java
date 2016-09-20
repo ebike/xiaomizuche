@@ -127,11 +127,11 @@ public class MyFragment extends BaseFragment {
 
     @Event(value = R.id.rev_contact_customer_service)
     private void contactCustomerService(View view) {
-        CommonUtils.showCustomDialog3(getActivity(), "呼叫", "取消", "", "0531-67805000", new DSingleDialogCallback() {
+        CommonUtils.showCustomDialog3(getActivity(), "呼叫", "取消", "", "400-602-2625", new DSingleDialogCallback() {
             @Override
             public void onPositiveButtonClick(String editText) {
                 // 用intent启动拨打电话
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:053167805000"));
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:4006022625"));
                 try {
                     startActivity(intent);
                 } catch (Exception e) {

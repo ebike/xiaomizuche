@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -55,7 +56,7 @@ import com.xiaomizuche.activity.AroundCarsActivity;
 import com.xiaomizuche.activity.BatteryActivity;
 import com.xiaomizuche.activity.HomeActivity;
 import com.xiaomizuche.activity.LoginActivity;
-import com.xiaomizuche.activity.ManageCardActivity;
+import com.xiaomizuche.activity.MyCardActivity;
 import com.xiaomizuche.activity.SimpleNaviActivity;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.base.BaseFragment;
@@ -64,6 +65,7 @@ import com.xiaomizuche.bean.LocInfoBean;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.bean.TrackBean;
 import com.xiaomizuche.bean.UserInfoBean;
+import com.xiaomizuche.bean.ValidateCodeBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.callback.DSingleDialogCallback;
 import com.xiaomizuche.constants.AppConfig;
@@ -74,6 +76,7 @@ import com.xiaomizuche.event.RemoteLockCarEvent;
 import com.xiaomizuche.event.RemoteVFEvent;
 import com.xiaomizuche.event.StopNaviEvent;
 import com.xiaomizuche.http.DHttpUtils;
+import com.xiaomizuche.http.DMethods;
 import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.map.JCLocationManager;
@@ -131,6 +134,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     View validatecodeLine;
     @ViewInject(R.id.tv_lock)
     TextView lockView;
+    @ViewInject(R.id.tv_send_validatecode)
+    TextView sendValidatecodeView;
 
     @ViewInject(R.id.map_view)
     MapView mapView;
@@ -208,8 +213,14 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     private TextView walkView;
 
     private Handler countHandler;
-    private Runnable runnable;
+    private Runnable countRunnable;
+    private Handler sendHandler;
+    private Runnable sendRunnable;
+    private Handler backHandler;
+    private Runnable backRunnable;
     private int minute = 60;
+    private String validateCode;
+    private ValidateCodeBean validateCodeBean;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -309,7 +320,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
 
     private void showCountDown() {
         countHandler = new Handler();
-        runnable = new Runnable() {
+        countRunnable = new Runnable() {
             @Override
             public void run() {
                 topBarView.setRightTextView(CommonUtils.DateMinus(AppConfig.userInfoBean.getCarRecord().getExpectEndTime()));
@@ -317,7 +328,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             }
         };
 
-        countHandler.postDelayed(runnable, 0);
+        countHandler.postDelayed(countRunnable, 0);
     }
 
     @Override
@@ -453,14 +464,66 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                 expireView.setVisibility(View.INVISIBLE);
             }
             if (countHandler != null) {
-                countHandler.removeCallbacks(runnable);
+                countHandler.removeCallbacks(countRunnable);
             }
         }
     }
 
     @Event(value = R.id.tv_expire)
     private void expire(View v) {
-        startActivity(new Intent(getActivity(), ManageCardActivity.class));
+        startActivity(new Intent(getActivity(), MyCardActivity.class));
+    }
+
+    @Event(value = R.id.tv_send_validatecode)
+    private void sendValidatecode(View v) {
+        if (AppConfig.userInfoBean != null) {
+            String carId = carIdText.getText().toString().trim();
+            if (CommonUtils.strIsEmpty(carId)) {
+                T.showShort(getActivity(), "请输入车辆编号");
+                return;
+            }
+            Map<String, String> paramsMap = new HashMap<>();
+            paramsMap.put("phone", AppConfig.userInfoBean.getPhone());
+            paramsMap.put("carId", carId);
+            RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendHireCarCode(), paramsMap);
+            DHttpUtils.post_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    ResponseBean<ValidateCodeBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<ValidateCodeBean>>() {
+                    }.getType());
+                    if (responseBean.getCode() == 1) {
+                        validateCodeBean = responseBean.getData();
+                        T.showShort(getActivity(), "验证码已发送至手机");
+                        sendHandler = new Handler();
+                        sendRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (minute > 0) {
+                                    sendValidatecodeView.setEnabled(false);
+                                    sendValidatecodeView.setText(minute + "s后可重发");
+                                    minute--;
+                                    handler.postDelayed(this, 1000);
+                                } else {
+                                    sendValidatecodeView.setText("获取验证码");
+                                    minute = 60;
+                                    sendValidatecodeView.setEnabled(true);
+                                }
+                            }
+                        };
+                        sendHandler.postDelayed(sendRunnable, 1000);
+                    } else {
+                        showShortText(responseBean.getErrmsg());
+                    }
+                }
+            });
+        } else {
+            CommonUtils.showCustomDialog3(getActivity(), "去登录", "取消", "", "请先登录", new DSingleDialogCallback() {
+                @Override
+                public void onPositiveButtonClick(String editText) {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
+            });
+        }
     }
 
     /**
@@ -1203,31 +1266,38 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     @Event(value = R.id.btn_apply)
     private void apply(View view) {
         if (AppConfig.userInfoBean != null) {
+            validateCode = validatecodeText.getText().toString().trim();
             if (CommonUtils.strIsEmpty(carIdText.getText().toString().trim())) {
                 T.showShort(getActivity(), "请输入车辆编号");
                 return;
             }
-            if (CommonUtils.strIsEmpty(validatecodeText.getText().toString().trim())) {
+            if (CommonUtils.strIsEmpty(validateCode)) {
                 T.showShort(getActivity(), "请输入验证码");
                 return;
             }
-            Map<String, String> map = new HashMap<>();
-            map.put("userId", AppConfig.userInfoBean.getUserId());
-            map.put("carId", carIdText.getText().toString().trim());
-            RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.hireCar(), map);
-            DHttpUtils.post_String((BaseActivity) getActivity(), true, params, new DCommonCallback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    ResponseBean<CarRecordBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<CarRecordBean>>() {
-                    }.getType());
-                    if (responseBean.getCode() == 1) {
-                        AppConfig.userInfoBean.setCarRecord(responseBean.getData());
-                        EventBus.getDefault().post(AppConfig.userInfoBean);
-                    } else {
-                        T.showShort(getActivity(), responseBean.getErrmsg());
+            if (validateCodeBean != null
+                    && new Date().getTime() < validateCodeBean.expireTime
+                    && validateCodeBean.code.equals(validateCode)) {
+                Map<String, String> map = new HashMap<>();
+                map.put("userId", AppConfig.userInfoBean.getUserId());
+                map.put("carId", carIdText.getText().toString().trim());
+                RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.hireCar(), map);
+                DHttpUtils.post_String((BaseActivity) getActivity(), true, params, new DCommonCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        ResponseBean<CarRecordBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<CarRecordBean>>() {
+                        }.getType());
+                        if (responseBean.getCode() == 1) {
+                            AppConfig.userInfoBean.setCarRecord(responseBean.getData());
+                            EventBus.getDefault().post(AppConfig.userInfoBean);
+                        } else {
+                            T.showShort(getActivity(), responseBean.getErrmsg());
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                T.showShort(getActivity(), "验证码不正确");
+            }
         } else {
             CommonUtils.showCustomDialog3(getActivity(), "去登录", "取消", "", "请先登录，再进行租车", new DSingleDialogCallback() {
                 @Override
@@ -1248,10 +1318,70 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
         //判断是否登录状态
         if (AppConfig.userInfoBean != null) {
             if (AppConfig.userInfoBean.getCarRecord() != null) {
-                CommonUtils.backCar(getActivity(), new View.OnClickListener() {
+                View backView = LayoutInflater.from(getActivity()).inflate(R.layout.view_back_car, null, false);
+                final EditText validatecodeText = (EditText) view.findViewById(R.id.et_validatecode);
+                final Button validatecodeButton = (Button) view.findViewById(R.id.btn_validatecode);
+                Button submitButton = (Button) view.findViewById(R.id.btn_submit);
+                final CustomDialog dialog = CommonUtils.showCustomDialog1(getActivity(), "", view);
+                validatecodeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        Map<String, String> paramsMap = new HashMap<>();
+                        paramsMap.put("phone", AppConfig.userInfoBean.getPhone());
+                        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendBackCarCode(), paramsMap);
+                        DHttpUtils.post_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                ResponseBean<ValidateCodeBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<ValidateCodeBean>>() {
+                                }.getType());
+                                if (responseBean.getCode() == 1) {
+                                    validateCodeBean = responseBean.getData();
+                                    T.showShort(getActivity(), "验证码已发送至手机");
+                                    backHandler = new Handler();
+                                    backRunnable = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (minute > 0) {
+                                                validatecodeButton.setEnabled(false);
+                                                validatecodeButton.setText(minute + "s后可重发");
+                                                minute--;
+                                                handler.postDelayed(this, 1000);
+                                            } else {
+                                                validatecodeButton.setText("获取验证码");
+                                                minute = 60;
+                                                validatecodeButton.setEnabled(true);
+                                            }
+                                        }
+                                    };
+                                    backHandler.postDelayed(backRunnable, 1000);
+                                } else {
+                                    showShortText(responseBean.getErrmsg());
+                                }
+                            }
+                        });
+                    }
+                });
+                submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        T.showShort(getActivity(), "还车成功");
+                        String validatecode = validatecodeText.getText().toString().trim();
+                        if (CommonUtils.strIsEmpty(validatecode)) {
+                            T.showShort(getActivity(), "请输入验证码");
+                            return;
+                        }
+                        if (validateCodeBean != null
+                                && new Date().getTime() < validateCodeBean.expireTime
+                                && validateCodeBean.code.equals(validatecode)) {
+                            dialog.cancel();
+                            DMethods.backCar(getActivity(), "1", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    T.showShort(getActivity(), "还车成功");
+                                }
+                            });
+                        } else {
+                            T.showShort(getActivity(), "验证码不正确");
+                        }
                     }
                 });
             } else {
@@ -1299,6 +1429,12 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
         mapNavi.destroy();
         mapView.onDestroy();
         handler.removeCallbacks(this); //停止刷新
+        if (sendHandler != null) {
+            sendHandler.removeCallbacks(sendRunnable);
+        }
+        if (backHandler != null) {
+            backHandler.removeCallbacks(backRunnable);
+        }
         EventBus.getDefault().unregister(this);
     }
 

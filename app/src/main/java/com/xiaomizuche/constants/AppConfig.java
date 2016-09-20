@@ -70,4 +70,6 @@ public class AppConfig {
     public static BadgeView badge;
     //历史位置
     public static final String CenterLngLat = "CenterLngLat";
+    //支付宝支付
+    public static final int SDK_PAY_FLAG = 1;
 }

@@ -926,7 +926,6 @@ public class CommonUtils {
         validatecodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.cancel();
 
             }
         });

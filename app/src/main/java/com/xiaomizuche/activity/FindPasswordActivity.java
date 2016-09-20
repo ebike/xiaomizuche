@@ -1,6 +1,5 @@
 package com.xiaomizuche.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,8 +15,10 @@ import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.ResponseBean;
+import com.xiaomizuche.bean.ValidateCodeBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.http.DHttpUtils;
+import com.xiaomizuche.http.DRequestParamsUtils;
 import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.utils.T;
@@ -25,6 +26,10 @@ import com.xiaomizuche.utils.T;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FindPasswordActivity extends BaseActivity implements TextWatcher {
 
@@ -43,13 +48,13 @@ public class FindPasswordActivity extends BaseActivity implements TextWatcher {
     @ViewInject(R.id.tv_send_validatecode)
     TextView sendValidatecodeView;
 
-    private Handler dealHandler;
     private Handler handler;
     private Runnable runnable;
     private int minute = 60;
     private String phone;
-    private String password;
     private String validateCode;
+    private String validatePhone;
+    private ValidateCodeBean validateCodeBean;
 
     @Override
     public void loadXml() {
@@ -84,7 +89,40 @@ public class FindPasswordActivity extends BaseActivity implements TextWatcher {
             T.showShort(this, "手机号码格式不正确");
             return;
         }
-//        SMSSDK.getVerificationCode("86", phone);
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("phone", phone);
+        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendUpdatePassCode(), paramsMap);
+        DHttpUtils.post_String(FindPasswordActivity.this, true, params, new DCommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ResponseBean<ValidateCodeBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<ValidateCodeBean>>() {
+                }.getType());
+                if (responseBean.getCode() == 1) {
+                    validateCodeBean = responseBean.getData();
+                    validatePhone = phone;
+                    T.showShort(FindPasswordActivity.this, "验证码已发送至手机");
+                    handler = new Handler();
+                    runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (minute > 0) {
+                                sendValidatecodeView.setEnabled(false);
+                                sendValidatecodeView.setText(minute + "s后可重发");
+                                minute--;
+                                handler.postDelayed(this, 1000);
+                            } else {
+                                sendValidatecodeView.setText("获取验证码");
+                                minute = 60;
+                                sendValidatecodeView.setEnabled(true);
+                            }
+                        }
+                    };
+                    handler.postDelayed(runnable, 1000);
+                } else {
+                    showShortText(responseBean.getErrmsg());
+                }
+            }
+        });
     }
 
     @Event(value = R.id.btn_next)
@@ -99,22 +137,29 @@ public class FindPasswordActivity extends BaseActivity implements TextWatcher {
             T.showShort(this, "请输入验证码");
             return;
         }
-        RequestParams params = new RequestParams(HttpConstants.checkUserByPhone(phone));
-        DHttpUtils.get_String(FindPasswordActivity.this, true, params, new DCommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                ResponseBean<String> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<String>>() {
-                }.getType());
-                if (responseBean.getCode() == 1) {
-                    Intent intent = new Intent(FindPasswordActivity.this, UpdatePasswordActivity.class);
-                    intent.putExtra("userId", responseBean.getData());
-                    startActivity(intent);
-                    FindPasswordActivity.this.finish();
-                } else {
-                    showShortText(responseBean.getErrmsg());
+        if (validateCodeBean != null
+                && new Date().getTime() < validateCodeBean.expireTime
+                && phone.equals(validatePhone)
+                && validateCodeBean.code.equals(validateCode)) {
+            RequestParams params = new RequestParams(HttpConstants.checkUserByPhone(phone));
+            DHttpUtils.get_String(FindPasswordActivity.this, true, params, new DCommonCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    ResponseBean<String> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<String>>() {
+                    }.getType());
+                    if (responseBean.getCode() == 1) {
+                        Intent intent = new Intent(FindPasswordActivity.this, UpdatePasswordActivity.class);
+                        intent.putExtra("userId", responseBean.getData());
+                        startActivity(intent);
+                        FindPasswordActivity.this.finish();
+                    } else {
+                        showShortText(responseBean.getErrmsg());
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            T.showShort(this, "验证码不正确");
+        }
     }
 
     @Override

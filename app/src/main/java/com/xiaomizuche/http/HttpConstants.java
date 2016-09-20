@@ -147,7 +147,7 @@ public class HttpConstants {
     }
 
     //根据手机号验证用户是否存在接口
-    public static String checkUserByPhone(String phone){
+    public static String checkUserByPhone(String phone) {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("user/checkUserByPhone.do");
         sb.append("?phone=").append(phone);
@@ -155,23 +155,65 @@ public class HttpConstants {
     }
 
     //重置密码接口
-    public static String resetPassword(){
+    public static String resetPassword() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("user/resetPassword.do");
         return sb.toString();
     }
 
     //获取附近车辆接口
-    public static String arroundCar(){
+    public static String arroundCar() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("map/arroundCar.do");
         return sb.toString();
     }
 
     //获取租车卡年费接口
-    public static String getVipYearPrice(){
+    public static String getVipYearPrice() {
         StringBuffer sb = new StringBuffer(baseUrl);
         sb.append("user/getVipYearPrice.do");
+        return sb.toString();
+    }
+
+    //发送注册短信验证码接口
+    public static String sendRegCode() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("sms/sendRegCode.do");
+        return sb.toString();
+    }
+
+    //发送找回密码短信验证码接口
+    public static String sendUpdatePassCode() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("sms/sendUpdatePassCode.do");
+        return sb.toString();
+    }
+
+    //发送租车短信验证码接口
+    public static String sendHireCarCode() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("sms/sendHireCarCode.do");
+        return sb.toString();
+    }
+
+    //发送还车短信验证码接口
+    public static String sendBackCarCode() {
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("sms/sendBackCarCode.do");
+        return sb.toString();
+    }
+
+    //租车卡办理支付接口
+    public static String handleCardPay(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("pay/handleCardPay.do");
+        return sb.toString();
+    }
+
+    //租车卡续费支付接口
+    public static String renewCardPay(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("pay/renewCardPay.do");
         return sb.toString();
     }
 

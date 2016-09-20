@@ -2,6 +2,7 @@ package com.xiaomizuche.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,21 +10,38 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xiaomizuche.R;
 import com.xiaomizuche.activity.HomeActivity;
 import com.xiaomizuche.activity.LoginActivity;
 import com.xiaomizuche.activity.ManageCardActivity;
 import com.xiaomizuche.base.BaseFragment;
+import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.bean.UserInfoBean;
+import com.xiaomizuche.bean.ValidateCodeBean;
+import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.constants.AppConfig;
+import com.xiaomizuche.http.DHttpUtils;
+import com.xiaomizuche.http.DMethods;
+import com.xiaomizuche.http.DRequestParamsUtils;
+import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.CommonUtils;
 import com.xiaomizuche.utils.T;
+import com.xiaomizuche.view.CustomDialog;
 import com.xiaomizuche.view.TopBarView;
 
+import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -36,6 +54,11 @@ public class HomeFragment extends BaseFragment {
     TopBarView topBarView;
     @ViewInject(R.id.web_view)
     WebView webView;
+
+    private Handler handler;
+    private Runnable runnable;
+    private int minute = 60;
+    private ValidateCodeBean validateCodeBean;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -104,10 +127,70 @@ public class HomeFragment extends BaseFragment {
         //判断是否登录状态
         if (AppConfig.userInfoBean != null) {
             if (AppConfig.userInfoBean.getCarRecord() != null) {
-                CommonUtils.backCar(getActivity(), new View.OnClickListener() {
+                View backView = LayoutInflater.from(getActivity()).inflate(R.layout.view_back_car, null, false);
+                final EditText validatecodeText = (EditText) view.findViewById(R.id.et_validatecode);
+                final Button validatecodeButton = (Button) view.findViewById(R.id.btn_validatecode);
+                Button submitButton = (Button) view.findViewById(R.id.btn_submit);
+                final CustomDialog dialog = CommonUtils.showCustomDialog1(getActivity(), "", view);
+                validatecodeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        Map<String, String> paramsMap = new HashMap<>();
+                        paramsMap.put("phone", AppConfig.userInfoBean.getPhone());
+                        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendBackCarCode(), paramsMap);
+                        DHttpUtils.post_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                ResponseBean<ValidateCodeBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<ValidateCodeBean>>() {
+                                }.getType());
+                                if (responseBean.getCode() == 1) {
+                                    validateCodeBean = responseBean.getData();
+                                    T.showShort(getActivity(), "验证码已发送至手机");
+                                    handler = new Handler();
+                                    runnable = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (minute > 0) {
+                                                validatecodeButton.setEnabled(false);
+                                                validatecodeButton.setText(minute + "s后可重发");
+                                                minute--;
+                                                handler.postDelayed(this, 1000);
+                                            } else {
+                                                validatecodeButton.setText("获取验证码");
+                                                minute = 60;
+                                                validatecodeButton.setEnabled(true);
+                                            }
+                                        }
+                                    };
+                                    handler.postDelayed(runnable, 1000);
+                                } else {
+                                    showShortText(responseBean.getErrmsg());
+                                }
+                            }
+                        });
+                    }
+                });
+                submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        T.showShort(getActivity(), "还车成功");
+                        String validatecode = validatecodeText.getText().toString().trim();
+                        if (CommonUtils.strIsEmpty(validatecode)) {
+                            T.showShort(getActivity(), "请输入验证码");
+                            return;
+                        }
+                        if (validateCodeBean != null
+                                && new Date().getTime() < validateCodeBean.expireTime
+                                && validateCodeBean.code.equals(validatecode)) {
+                            dialog.cancel();
+                            DMethods.backCar(getActivity(), "1", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    T.showShort(getActivity(), "还车成功");
+                                }
+                            });
+                        } else {
+                            T.showShort(getActivity(), "验证码不正确");
+                        }
                     }
                 });
             } else {
@@ -125,6 +208,9 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (handler != null) {
+            handler.removeCallbacks(runnable);
+        }
         EventBus.getDefault().unregister(this);
     }
 }

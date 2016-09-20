@@ -25,6 +25,7 @@ public class PaymentDialog implements OnClickListener {
     private ImageView wxpayView;
     private ImageView alipayView;
     private ImageView unionpayView;
+    private PayCallBack payCallBack;
 
     public PaymentDialog(Context context) {
         this.context = context;
@@ -78,13 +79,13 @@ public class PaymentDialog implements OnClickListener {
         dialog.dismiss();
         switch (view.getId()) {
             case R.id.iv_wxpay:
-
+                payCallBack.onPay("wxpay");
                 break;
             case R.id.iv_alipay:
-
+                payCallBack.onPay("alipay");
                 break;
             case R.id.iv_unionpay:
-
+                payCallBack.onPay("unionpay");
                 break;
             default:
                 break;
@@ -95,4 +96,11 @@ public class PaymentDialog implements OnClickListener {
         feeView.setText("支付年费:￥" + fee);
     }
 
+    public interface PayCallBack {
+        void onPay(String payMode);
+    }
+
+    public void setPayCallBack(PayCallBack payCallBack) {
+        this.payCallBack = payCallBack;
+    }
 }

@@ -16,6 +16,7 @@ import com.xiaomizuche.R;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.bean.UserInfoBean;
+import com.xiaomizuche.bean.ValidateCodeBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.event.FinishActivityEvent;
@@ -30,6 +31,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,13 +63,14 @@ public class RegisterActivity extends BaseActivity implements TextWatcher {
     @ViewInject(R.id.tv_send_validatecode)
     TextView sendValidatecodeView;
 
-    private Handler dealHandler;
     private Handler handler;
     private Runnable runnable;
     private int minute = 60;
     private String phone;
     private String password;
     private String validateCode;
+    private String validatePhone;
+    private ValidateCodeBean validateCodeBean;
 
     @Override
     public void loadXml() {
@@ -81,71 +84,7 @@ public class RegisterActivity extends BaseActivity implements TextWatcher {
 
     @Override
     public void init() {
-//        eh = new EventHandler() {
-//            @Override
-//            public void afterEvent(int event, int result, Object data) {
-//                if (result == SMSSDK.RESULT_COMPLETE) { //回调完成
-//                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功
-//                        dealHandler.sendEmptyMessageDelayed(SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE, 0);
-//                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {//获取验证码成功
-//                        dealHandler.sendEmptyMessageDelayed(SMSSDK.EVENT_GET_VERIFICATION_CODE, 0);
-//                    }
-//                } else {
-//                    ((Throwable) data).printStackTrace();
-//                    Message message = new Message();
-//                    message.what = SMSSDK.RESULT_ERROR;
-//                    message.obj = ((Throwable) data).getMessage();
-//                    dealHandler.sendMessageDelayed(message, 0);
-//                }
-//            }
-//        };
-//        SMSSDK.registerEventHandler(eh); //注册短信回调
-//
-//        dealHandler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                switch (msg.what) {
-//                    case SMSSDK.RESULT_ERROR:
-//                        try {
-//                            SMSResult result = new Gson().fromJson(msg.obj + "", SMSResult.class);
-//                            if (result.getStatus() == 467 || result.getStatus() == 468) {
-//                                T.showShort(RegisterActivity.this, "验证码不正确");
-//                            } else {
-//                                T.showShort(RegisterActivity.this, result.getDetail());
-//                            }
-//                        } catch (IllegalStateException ex) {
-//                        }
-//                        break;
-//                    case SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE:
 
-//                        break;
-//                    case SMSSDK.EVENT_GET_VERIFICATION_CODE:
-//                        T.showShort(RegisterActivity.this, "验证码已发送至手机");
-//                        handler = new Handler();
-//                        runnable = new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (minute > 0) {
-//                                    sendValidatecodeView.setEnabled(false);
-//                                    sendValidatecodeView.setText(minute + "s后可重发");
-//                                    minute--;
-//                                    handler.postDelayed(this, 1000);
-//                                } else {
-//                                    sendValidatecodeView.setText("获取验证码");
-//                                    minute = 60;
-//                                    sendValidatecodeView.setEnabled(true);
-//                                }
-//                            }
-//                        };
-//
-//                        handler.postDelayed(runnable, 1000);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                super.handleMessage(msg);
-//            }
-//        };
     }
 
     @Override
@@ -167,7 +106,40 @@ public class RegisterActivity extends BaseActivity implements TextWatcher {
             T.showShort(this, "手机号码格式不正确");
             return;
         }
-//        SMSSDK.getVerificationCode("86", phone);
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("phone", phone);
+        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendRegCode(), paramsMap);
+        DHttpUtils.post_String(RegisterActivity.this, true, params, new DCommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ResponseBean<ValidateCodeBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<ValidateCodeBean>>() {
+                }.getType());
+                if (responseBean.getCode() == 1) {
+                    validateCodeBean = responseBean.getData();
+                    validatePhone = phone;
+                    T.showShort(RegisterActivity.this, "验证码已发送至手机");
+                    handler = new Handler();
+                    runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (minute > 0) {
+                                sendValidatecodeView.setEnabled(false);
+                                sendValidatecodeView.setText(minute + "s后可重发");
+                                minute--;
+                                handler.postDelayed(this, 1000);
+                            } else {
+                                sendValidatecodeView.setText("获取验证码");
+                                minute = 60;
+                                sendValidatecodeView.setEnabled(true);
+                            }
+                        }
+                    };
+                    handler.postDelayed(runnable, 1000);
+                } else {
+                    showShortText(responseBean.getErrmsg());
+                }
+            }
+        });
     }
 
     @Event(value = R.id.btn_next)
@@ -187,33 +159,40 @@ public class RegisterActivity extends BaseActivity implements TextWatcher {
             T.showShort(this, "密码为6-16位字母或数字");
             return;
         }
-        Map<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("phone", phone);
-        paramsMap.put("password", CommonUtils.MD5(password));
-        paramsMap.put("clientId", AppConfig.imei);
-        paramsMap.put("platform", "android:" + android.os.Build.VERSION.RELEASE);
-        RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getRegUser(), paramsMap);
-        DHttpUtils.post_String(RegisterActivity.this, true, params, new DCommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
-                }.getType());
-                if (responseBean.getCode() == 1) {
-                    //保存数据信息
-                    AppConfig.userInfoBean = responseBean.getData();
-                    SPUtils.put(RegisterActivity.this, AppConfig.LOGIN_NAME, phone);
-                    SPUtils.put(RegisterActivity.this, AppConfig.PASSWORD, CommonUtils.MD5(password));
-                    //注册极光推送别名
-                    setAlias();
-                    EventBus.getDefault().post(new FinishActivityEvent(true, LoginActivity.class.getSimpleName()));
-                    EventBus.getDefault().post(AppConfig.userInfoBean);
-                    startActivity(new Intent(RegisterActivity.this, AddUserInfoActivity.class));
-                    RegisterActivity.this.finish();
-                } else {
-                    showShortText(responseBean.getErrmsg());
+        if (validateCodeBean != null
+                && new Date().getTime() < validateCodeBean.expireTime
+                && phone.equals(validatePhone)
+                && validateCodeBean.code.equals(validateCode)) {
+            Map<String, String> paramsMap = new HashMap<>();
+            paramsMap.put("phone", phone);
+            paramsMap.put("password", CommonUtils.MD5(password));
+            paramsMap.put("clientId", AppConfig.imei);
+            paramsMap.put("platform", "android:" + android.os.Build.VERSION.RELEASE);
+            RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.getRegUser(), paramsMap);
+            DHttpUtils.post_String(RegisterActivity.this, true, params, new DCommonCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
+                    }.getType());
+                    if (responseBean.getCode() == 1) {
+                        //保存数据信息
+                        AppConfig.userInfoBean = responseBean.getData();
+                        SPUtils.put(RegisterActivity.this, AppConfig.LOGIN_NAME, phone);
+                        SPUtils.put(RegisterActivity.this, AppConfig.PASSWORD, CommonUtils.MD5(password));
+                        //注册极光推送别名
+                        setAlias();
+                        EventBus.getDefault().post(new FinishActivityEvent(true, LoginActivity.class.getSimpleName()));
+                        EventBus.getDefault().post(AppConfig.userInfoBean);
+                        startActivity(new Intent(RegisterActivity.this, AddUserInfoActivity.class));
+                        RegisterActivity.this.finish();
+                    } else {
+                        showShortText(responseBean.getErrmsg());
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            T.showShort(this, "验证码不正确");
+        }
     }
 
     @Override
