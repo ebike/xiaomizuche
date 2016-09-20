@@ -217,6 +217,13 @@ public class HttpConstants {
         return sb.toString();
     }
 
+    //支付成功后执行接口
+    public static String appPayNotify(){
+        StringBuffer sb = new StringBuffer(baseUrl);
+        sb.append("pay/appPayNotify.do");
+        return sb.toString();
+    }
+
     //---------------------------------以上为小米租车------------------------------------------
 
 

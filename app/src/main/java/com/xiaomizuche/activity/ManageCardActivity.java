@@ -16,6 +16,7 @@ import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.PayInfoBean;
 import com.xiaomizuche.bean.PayResult;
 import com.xiaomizuche.bean.ResponseBean;
+import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.http.DHttpUtils;
@@ -33,6 +34,7 @@ import java.util.Map;
 public class ManageCardActivity extends BaseActivity {
 
     private String fee;
+    private PayInfoBean payInfoBean;
 
     @Override
     public void loadXml() {
@@ -98,7 +100,7 @@ public class ManageCardActivity extends BaseActivity {
                             ResponseBean<PayInfoBean> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<PayInfoBean>>() {
                             }.getType());
                             if (bean.getCode() == 1) {
-                                PayInfoBean payInfoBean = bean.getData();
+                                payInfoBean = bean.getData();
                                 pay(payInfoBean.getOrderInfo());
                             } else {
                                 showShortText(bean.getErrmsg());
@@ -148,9 +150,25 @@ public class ManageCardActivity extends BaseActivity {
                     String resultStatus = payResult.getResultStatus();
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
-
-                        startActivity(new Intent(ManageCardActivity.this, MyCardActivity.class));
-                        ManageCardActivity.this.finish();
+                        Map<String, String> map = new HashMap<>();
+                        map.put("userId", AppConfig.userInfoBean.getUserId());
+                        map.put("orderId", payInfoBean.getOrderId());
+                        RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.appPayNotify(), map);
+                        DHttpUtils.post_String(ManageCardActivity.this, true, params, new DCommonCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
+                                }.getType());
+                                if (responseBean.getCode() == 1) {
+                                    //保存数据信息
+                                    AppConfig.userInfoBean = responseBean.getData();
+                                    startActivity(new Intent(ManageCardActivity.this, MyCardActivity.class));
+                                    ManageCardActivity.this.finish();
+                                } else {
+                                    showShortText(responseBean.getErrmsg());
+                                }
+                            }
+                        });
                     } else {
                         T.showShort(ManageCardActivity.this, "支付失败");
                     }

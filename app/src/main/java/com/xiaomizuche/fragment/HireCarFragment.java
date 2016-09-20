@@ -56,6 +56,7 @@ import com.xiaomizuche.activity.AroundCarsActivity;
 import com.xiaomizuche.activity.BatteryActivity;
 import com.xiaomizuche.activity.HomeActivity;
 import com.xiaomizuche.activity.LoginActivity;
+import com.xiaomizuche.activity.ManageCardActivity;
 import com.xiaomizuche.activity.MyCardActivity;
 import com.xiaomizuche.activity.SimpleNaviActivity;
 import com.xiaomizuche.base.BaseActivity;
@@ -472,58 +473,6 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     @Event(value = R.id.tv_expire)
     private void expire(View v) {
         startActivity(new Intent(getActivity(), MyCardActivity.class));
-    }
-
-    @Event(value = R.id.tv_send_validatecode)
-    private void sendValidatecode(View v) {
-        if (AppConfig.userInfoBean != null) {
-            String carId = carIdText.getText().toString().trim();
-            if (CommonUtils.strIsEmpty(carId)) {
-                T.showShort(getActivity(), "请输入车辆编号");
-                return;
-            }
-            Map<String, String> paramsMap = new HashMap<>();
-            paramsMap.put("phone", AppConfig.userInfoBean.getPhone());
-            paramsMap.put("carId", carId);
-            RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendHireCarCode(), paramsMap);
-            DHttpUtils.post_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    ResponseBean<ValidateCodeBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<ValidateCodeBean>>() {
-                    }.getType());
-                    if (responseBean.getCode() == 1) {
-                        validateCodeBean = responseBean.getData();
-                        T.showShort(getActivity(), "验证码已发送至手机");
-                        sendHandler = new Handler();
-                        sendRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (minute > 0) {
-                                    sendValidatecodeView.setEnabled(false);
-                                    sendValidatecodeView.setText(minute + "s后可重发");
-                                    minute--;
-                                    handler.postDelayed(this, 1000);
-                                } else {
-                                    sendValidatecodeView.setText("获取验证码");
-                                    minute = 60;
-                                    sendValidatecodeView.setEnabled(true);
-                                }
-                            }
-                        };
-                        sendHandler.postDelayed(sendRunnable, 1000);
-                    } else {
-                        showShortText(responseBean.getErrmsg());
-                    }
-                }
-            });
-        } else {
-            CommonUtils.showCustomDialog3(getActivity(), "去登录", "取消", "", "请先登录", new DSingleDialogCallback() {
-                @Override
-                public void onPositiveButtonClick(String editText) {
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                }
-            });
-        }
     }
 
     /**
@@ -1263,40 +1212,110 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
         }
     }
 
-    @Event(value = R.id.btn_apply)
-    private void apply(View view) {
+    @Event(value = R.id.tv_send_validatecode)
+    private void sendValidatecode(View v) {
         if (AppConfig.userInfoBean != null) {
-            validateCode = validatecodeText.getText().toString().trim();
-            if (CommonUtils.strIsEmpty(carIdText.getText().toString().trim())) {
-                T.showShort(getActivity(), "请输入车辆编号");
-                return;
-            }
-            if (CommonUtils.strIsEmpty(validateCode)) {
-                T.showShort(getActivity(), "请输入验证码");
-                return;
-            }
-            if (validateCodeBean != null
-                    && new Date().getTime() < validateCodeBean.expireTime
-                    && validateCodeBean.code.equals(validateCode)) {
-                Map<String, String> map = new HashMap<>();
-                map.put("userId", AppConfig.userInfoBean.getUserId());
-                map.put("carId", carIdText.getText().toString().trim());
-                RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.hireCar(), map);
-                DHttpUtils.post_String((BaseActivity) getActivity(), true, params, new DCommonCallback<String>() {
+            if (AppConfig.userInfoBean.getVip() == 2) {
+                String carId = carIdText.getText().toString().trim();
+                if (CommonUtils.strIsEmpty(carId)) {
+                    T.showShort(getActivity(), "请输入车辆编号");
+                    return;
+                }
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("phone", AppConfig.userInfoBean.getPhone());
+                paramsMap.put("carId", carId);
+                RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendHireCarCode(), paramsMap);
+                DHttpUtils.post_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
-                        ResponseBean<CarRecordBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<CarRecordBean>>() {
+                        ResponseBean<ValidateCodeBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<ValidateCodeBean>>() {
                         }.getType());
                         if (responseBean.getCode() == 1) {
-                            AppConfig.userInfoBean.setCarRecord(responseBean.getData());
-                            EventBus.getDefault().post(AppConfig.userInfoBean);
+                            validateCodeBean = responseBean.getData();
+                            T.showShort(getActivity(), "验证码已发送至手机");
+                            sendHandler = new Handler();
+                            sendRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (minute > 0) {
+                                        sendValidatecodeView.setEnabled(false);
+                                        sendValidatecodeView.setText(minute + "s后可重发");
+                                        minute--;
+                                        handler.postDelayed(this, 1000);
+                                    } else {
+                                        sendValidatecodeView.setText("获取验证码");
+                                        minute = 60;
+                                        sendValidatecodeView.setEnabled(true);
+                                    }
+                                }
+                            };
+                            sendHandler.postDelayed(sendRunnable, 1000);
                         } else {
-                            T.showShort(getActivity(), responseBean.getErrmsg());
+                            showShortText(responseBean.getErrmsg());
                         }
                     }
                 });
             } else {
-                T.showShort(getActivity(), "验证码不正确");
+                CommonUtils.showCustomDialog3(getActivity(), "去办卡", "取消", "", "您还未办理租车卡，暂不能租车", new DSingleDialogCallback() {
+                    @Override
+                    public void onPositiveButtonClick(String editText) {
+                        startActivity(new Intent(getActivity(), ManageCardActivity.class));
+                    }
+                });
+            }
+        } else {
+            CommonUtils.showCustomDialog3(getActivity(), "去登录", "取消", "", "请先登录", new DSingleDialogCallback() {
+                @Override
+                public void onPositiveButtonClick(String editText) {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
+            });
+        }
+    }
+
+    @Event(value = R.id.btn_apply)
+    private void apply(View view) {
+        if (AppConfig.userInfoBean != null) {
+            if (AppConfig.userInfoBean.getVip() == 2) {
+                validateCode = validatecodeText.getText().toString().trim();
+                if (CommonUtils.strIsEmpty(carIdText.getText().toString().trim())) {
+                    T.showShort(getActivity(), "请输入车辆编号");
+                    return;
+                }
+                if (CommonUtils.strIsEmpty(validateCode)) {
+                    T.showShort(getActivity(), "请输入验证码");
+                    return;
+                }
+                if (validateCodeBean != null
+                        && new Date().getTime() < validateCodeBean.expireTime
+                        && validateCodeBean.code.equals(validateCode)) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("userId", AppConfig.userInfoBean.getUserId());
+                    map.put("carId", carIdText.getText().toString().trim());
+                    RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.hireCar(), map);
+                    DHttpUtils.post_String((BaseActivity) getActivity(), true, params, new DCommonCallback<String>() {
+                        @Override
+                        public void onSuccess(String result) {
+                            ResponseBean<CarRecordBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<CarRecordBean>>() {
+                            }.getType());
+                            if (responseBean.getCode() == 1) {
+                                AppConfig.userInfoBean.setCarRecord(responseBean.getData());
+                                EventBus.getDefault().post(AppConfig.userInfoBean);
+                            } else {
+                                T.showShort(getActivity(), responseBean.getErrmsg());
+                            }
+                        }
+                    });
+                } else {
+                    T.showShort(getActivity(), "验证码不正确");
+                }
+            } else {
+                CommonUtils.showCustomDialog3(getActivity(), "去办卡", "取消", "", "您还未办理租车卡，暂不能租车", new DSingleDialogCallback() {
+                    @Override
+                    public void onPositiveButtonClick(String editText) {
+                        startActivity(new Intent(getActivity(), ManageCardActivity.class));
+                    }
+                });
             }
         } else {
             CommonUtils.showCustomDialog3(getActivity(), "去登录", "取消", "", "请先登录，再进行租车", new DSingleDialogCallback() {
@@ -1328,6 +1347,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                     public void onClick(final View v) {
                         Map<String, String> paramsMap = new HashMap<>();
                         paramsMap.put("phone", AppConfig.userInfoBean.getPhone());
+                        paramsMap.put("id", AppConfig.userInfoBean.getCarRecord().getId());
                         RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendBackCarCode(), paramsMap);
                         DHttpUtils.post_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
                             @Override

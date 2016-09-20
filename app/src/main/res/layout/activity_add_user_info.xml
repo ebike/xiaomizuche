@@ -203,13 +203,4 @@
         android:textColor="@color/white"
         android:textSize="18sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="16dp"
-        android:hint="点击完成注册视为你同意《用户协议》"
-        android:textColorHint="@color/font_gray"
-        android:textSize="14sp" />
-
 </LinearLayout>

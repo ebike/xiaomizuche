@@ -62,6 +62,8 @@ public class RegisterActivity extends BaseActivity implements TextWatcher {
     View passwordLine;
     @ViewInject(R.id.tv_send_validatecode)
     TextView sendValidatecodeView;
+    @ViewInject(R.id.iv_terms)
+    ImageView termsView;
 
     private Handler handler;
     private Runnable runnable;
@@ -71,6 +73,7 @@ public class RegisterActivity extends BaseActivity implements TextWatcher {
     private String validateCode;
     private String validatePhone;
     private ValidateCodeBean validateCodeBean;
+    private boolean isAgree = true;
 
     @Override
     public void loadXml() {
@@ -142,11 +145,34 @@ public class RegisterActivity extends BaseActivity implements TextWatcher {
         });
     }
 
+    @Event(value = R.id.iv_terms)
+    private void terms(View v) {
+        if (isAgree) {
+            isAgree = false;
+            termsView.setImageResource(R.mipmap.icon_circle_nosel);
+        } else {
+            isAgree = true;
+            termsView.setImageResource(R.mipmap.icon_circle_sel);
+        }
+    }
+
+    @Event(value = R.id.tv_terms)
+    private void toTerms(View v) {
+        Intent intent = new Intent(this, WebActivity.class);
+        intent.putExtra("title", "服务条款");
+        intent.putExtra("url", HttpConstants.baseUrl + "h5/service_terms.html");
+        startActivity(intent);
+    }
+
     @Event(value = R.id.btn_next)
     private void next(View v) {
         phone = phoneText.getText().toString().trim();
         validateCode = validateCodeText.getText().toString().trim();
         password = passwordText.getText().toString().trim();
+        if (!isAgree) {
+            T.showShort(this, "请同意服务条款后继续操作");
+            return;
+        }
         if (CommonUtils.strIsEmpty(phone) || !CommonUtils.isPhoneNumber(phone)) {
             T.showShort(this, "手机号码格式不正确");
             return;

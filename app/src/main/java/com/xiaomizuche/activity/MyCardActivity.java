@@ -16,6 +16,7 @@ import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.PayInfoBean;
 import com.xiaomizuche.bean.PayResult;
 import com.xiaomizuche.bean.ResponseBean;
+import com.xiaomizuche.bean.UserInfoBean;
 import com.xiaomizuche.callback.DCommonCallback;
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.http.DHttpUtils;
@@ -39,6 +40,7 @@ public class MyCardActivity extends BaseActivity {
     TextView dueTimeView;
 
     private String fee;
+    private PayInfoBean payInfoBean;
 
     @Override
     public void loadXml() {
@@ -107,7 +109,7 @@ public class MyCardActivity extends BaseActivity {
                             ResponseBean<PayInfoBean> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<PayInfoBean>>() {
                             }.getType());
                             if (bean.getCode() == 1) {
-                                PayInfoBean payInfoBean = bean.getData();
+                                payInfoBean = bean.getData();
                                 pay(payInfoBean.getOrderInfo());
                             } else {
                                 showShortText(bean.getErrmsg());
@@ -157,7 +159,24 @@ public class MyCardActivity extends BaseActivity {
                     String resultStatus = payResult.getResultStatus();
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
-
+                        Map<String, String> map = new HashMap<>();
+                        map.put("userId", AppConfig.userInfoBean.getUserId());
+                        map.put("orderId", payInfoBean.getOrderId());
+                        RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.appPayNotify(), map);
+                        DHttpUtils.post_String(MyCardActivity.this, true, params, new DCommonCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                ResponseBean<UserInfoBean> responseBean = new Gson().fromJson(result, new TypeToken<ResponseBean<UserInfoBean>>() {
+                                }.getType());
+                                if (responseBean.getCode() == 1) {
+                                    //保存数据信息
+                                    AppConfig.userInfoBean = responseBean.getData();
+                                    init();
+                                } else {
+                                    showShortText(responseBean.getErrmsg());
+                                }
+                            }
+                        });
                     } else {
                         T.showShort(MyCardActivity.this, "支付失败");
                     }

@@ -64,6 +64,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- 支付宝支付 开始 -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" />
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" />
+        <!-- 支付宝支付 结束 -->
+
         <!-- 高德地图 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -253,8 +266,12 @@
         <activity
             android:name=".activity.UpdatePasswordActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.MyCardActivity" />
-        <activity android:name=".activity.AroundCarsActivity"></activity>
+        <activity
+            android:name=".activity.MyCardActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AroundCarsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
