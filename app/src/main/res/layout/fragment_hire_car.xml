@@ -181,7 +181,9 @@
                     android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/iv_car_id"
                     android:background="@null"
+                    android:digits="@string/digits_number"
                     android:hint="输入车辆编号"
+                    android:inputType="phone"
                     android:textColorHint="@color/font_gray"
                     android:textSize="14sp" />
 

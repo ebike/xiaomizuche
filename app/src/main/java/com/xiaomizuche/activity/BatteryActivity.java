@@ -1,9 +1,6 @@
 package com.xiaomizuche.activity;
 
-import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,8 +18,6 @@ public class BatteryActivity extends BaseActivity {
     ImageView batteryImageView;
     @ViewInject(R.id.tv_battery)
     TextView batteryView;
-    @ViewInject(R.id.tv_update)
-    TextView updateView;
 
     private String remainBattery;
     private String currVoltage;
@@ -71,20 +66,11 @@ public class BatteryActivity extends BaseActivity {
         } else {
             batteryImageView.setImageResource(R.mipmap.icon_battery_percent_0);
         }
-        updateView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
-        updateView.getPaint().setAntiAlias(true);//抗锯齿
     }
 
     @Override
     public void setListener() {
-        updateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(BatteryActivity.this, CarInformationActivity.class);
-                intent.putExtra("leftText", "电量监测");
-                startActivity(intent);
-            }
-        });
+
     }
 
     @Override

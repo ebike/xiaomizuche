@@ -12,6 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,6 +20,7 @@ import com.xiaomizuche.R;
 import com.xiaomizuche.activity.HomeActivity;
 import com.xiaomizuche.activity.LoginActivity;
 import com.xiaomizuche.activity.ManageCardActivity;
+import com.xiaomizuche.activity.MyCardActivity;
 import com.xiaomizuche.base.BaseFragment;
 import com.xiaomizuche.bean.ResponseBean;
 import com.xiaomizuche.bean.UserInfoBean;
@@ -54,6 +56,8 @@ public class HomeFragment extends BaseFragment {
     TopBarView topBarView;
     @ViewInject(R.id.web_view)
     WebView webView;
+    @ViewInject(R.id.tv_manage_card)
+    TextView manageCardView;
 
     private Handler handler;
     private Runnable runnable;
@@ -76,6 +80,12 @@ public class HomeFragment extends BaseFragment {
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 }
             });
+        }
+
+        if (AppConfig.userInfoBean != null && AppConfig.userInfoBean.getVip() == 2) {
+            manageCardView.setText("我的租车卡");
+        } else {
+            manageCardView.setText("办理租车卡");
         }
 
         webView.loadUrl("http://api.xiaomiddc.com/app/h5/service_descrip.html");
@@ -114,7 +124,11 @@ public class HomeFragment extends BaseFragment {
 
     @Event(value = R.id.tv_manage_card)
     private void manageCard(View view) {
-        startActivity(new Intent(getActivity(), ManageCardActivity.class));
+        if (AppConfig.userInfoBean != null && AppConfig.userInfoBean.getVip() == 2) {
+            startActivity(new Intent(getActivity(), MyCardActivity.class));
+        } else {
+            startActivity(new Intent(getActivity(), ManageCardActivity.class));
+        }
     }
 
     @Event(value = R.id.tv_hire_car)
@@ -128,15 +142,16 @@ public class HomeFragment extends BaseFragment {
         if (AppConfig.userInfoBean != null) {
             if (AppConfig.userInfoBean.getCarRecord() != null) {
                 View backView = LayoutInflater.from(getActivity()).inflate(R.layout.view_back_car, null, false);
-                final EditText validatecodeText = (EditText) view.findViewById(R.id.et_validatecode);
-                final Button validatecodeButton = (Button) view.findViewById(R.id.btn_validatecode);
-                Button submitButton = (Button) view.findViewById(R.id.btn_submit);
-                final CustomDialog dialog = CommonUtils.showCustomDialog1(getActivity(), "", view);
+                final EditText validatecodeText = (EditText) backView.findViewById(R.id.et_validatecode);
+                final Button validatecodeButton = (Button) backView.findViewById(R.id.btn_validatecode);
+                Button submitButton = (Button) backView.findViewById(R.id.btn_submit);
+                final CustomDialog dialog = CommonUtils.showCustomDialog1(getActivity(), "", backView);
                 validatecodeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
                         Map<String, String> paramsMap = new HashMap<>();
                         paramsMap.put("phone", AppConfig.userInfoBean.getPhone());
+                        paramsMap.put("id", AppConfig.userInfoBean.getCarRecord().getId());
                         RequestParams params = DRequestParamsUtils.getRequestParams(HttpConstants.sendBackCarCode(), paramsMap);
                         DHttpUtils.post_String((HomeActivity) getActivity(), true, params, new DCommonCallback<String>() {
                             @Override
@@ -203,6 +218,11 @@ public class HomeFragment extends BaseFragment {
 
     public void onEvent(UserInfoBean bean) {
         topBarView.setRightTextEnabled(false);
+        if (AppConfig.userInfoBean != null && AppConfig.userInfoBean.getVip() == 2) {
+            manageCardView.setText("我的租车卡");
+        } else {
+            manageCardView.setText("办理租车卡");
+        }
     }
 
     @Override

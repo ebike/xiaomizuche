@@ -38,7 +38,7 @@ public class DMethods {
                     EventBus.getDefault().post(AppConfig.userInfoBean);
                     callback.onClick(null);
                 } else if (responseBean.getCode() == 2) {
-                    CommonUtils.showCustomDialog0(context, "", "是否强制还车", new DSingleDialogCallback() {
+                    CommonUtils.showCustomDialog0(context, "", "系统检测到电动车未归还到指定车棚！是否执行强制还车？", new DSingleDialogCallback() {
                         @Override
                         public void onPositiveButtonClick(String editText) {
                             backCar(context, "2", callback);

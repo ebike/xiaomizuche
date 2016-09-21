@@ -341,6 +341,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             if (hasTrack) {
                 aMap.clear();
             }
+            topBarView.setCenterTextView("车辆控制");
             hireCarLayout.setVisibility(View.GONE);
             locationLayout.setVisibility(View.VISIBLE);
             showCountDown();
@@ -455,6 +456,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
             });
         } else {
             topBarView.setRightTextView("");
+            topBarView.setCenterTextView("申请用车");
             hireCarLayout.setVisibility(View.VISIBLE);
             locationLayout.setVisibility(View.GONE);
             if (AppConfig.userInfoBean != null
@@ -1301,6 +1303,8 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                             if (responseBean.getCode() == 1) {
                                 AppConfig.userInfoBean.setCarRecord(responseBean.getData());
                                 EventBus.getDefault().post(AppConfig.userInfoBean);
+                                carIdText.setText("");
+                                validatecodeText.setText("");
                             } else {
                                 T.showShort(getActivity(), responseBean.getErrmsg());
                             }
@@ -1338,10 +1342,10 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
         if (AppConfig.userInfoBean != null) {
             if (AppConfig.userInfoBean.getCarRecord() != null) {
                 View backView = LayoutInflater.from(getActivity()).inflate(R.layout.view_back_car, null, false);
-                final EditText validatecodeText = (EditText) view.findViewById(R.id.et_validatecode);
-                final Button validatecodeButton = (Button) view.findViewById(R.id.btn_validatecode);
-                Button submitButton = (Button) view.findViewById(R.id.btn_submit);
-                final CustomDialog dialog = CommonUtils.showCustomDialog1(getActivity(), "", view);
+                final EditText validatecodeText = (EditText) backView.findViewById(R.id.et_validatecode);
+                final Button validatecodeButton = (Button) backView.findViewById(R.id.btn_validatecode);
+                Button submitButton = (Button) backView.findViewById(R.id.btn_submit);
+                final CustomDialog dialog = CommonUtils.showCustomDialog1(getActivity(), "", backView);
                 validatecodeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
@@ -1397,6 +1401,12 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
                                 @Override
                                 public void onClick(View v) {
                                     T.showShort(getActivity(), "还车成功");
+                                    topBarView.setRightTextView("");
+                                    topBarView.setCenterTextView("申请用车");
+                                    handler.removeCallbacks(HireCarFragment.this); //停止刷新
+                                    if (countHandler != null) {
+                                        countHandler.removeCallbacks(countRunnable);
+                                    }
                                 }
                             });
                         } else {

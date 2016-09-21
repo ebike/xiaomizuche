@@ -44,7 +44,7 @@
             android:gravity="center"
             android:paddingBottom="20dp"
             android:paddingTop="32dp"
-            android:text="办租车卡" />
+            android:text="办理租车卡" />
 
         <View
             android:layout_width="1px"
