@@ -11,6 +11,10 @@ import android.view.View;
 import com.alipay.sdk.app.PayTask;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tencent.mm.sdk.constants.Build;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.xiaomizuche.R;
 import com.xiaomizuche.base.BaseActivity;
 import com.xiaomizuche.bean.PayInfoBean;
@@ -25,6 +29,8 @@ import com.xiaomizuche.http.HttpConstants;
 import com.xiaomizuche.utils.T;
 import com.xiaomizuche.view.PaymentDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 
@@ -101,7 +107,13 @@ public class ManageCardActivity extends BaseActivity {
                             }.getType());
                             if (bean.getCode() == 1) {
                                 payInfoBean = bean.getData();
-                                pay(payInfoBean.getOrderInfo());
+                                if ("wxpay".equals(payInfoBean.getPayMode())) {
+//                                    wxpay();
+                                } else if ("alipay".equals(payInfoBean.getPayMode())) {
+                                    pay(payInfoBean.getOrderInfo());
+                                } else if ("unionpay".equals(payInfoBean.getPayMode())) {
+
+                                }
                             } else {
                                 showShortText(bean.getErrmsg());
                             }
@@ -133,6 +145,35 @@ public class ManageCardActivity extends BaseActivity {
         // 必须异步调用
         Thread payThread = new Thread(payRunnable);
         payThread.start();
+    }
+
+    private void wxpay(String content) {
+        try {
+            IWXAPI api = WXAPIFactory.createWXAPI(ManageCardActivity.this,  AppConfig.WX_APP_ID);
+            boolean isPaySupported = api.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;
+            if (isPaySupported) {
+                JSONObject json = new JSONObject(content);
+                if (null != json && !json.has("retcode")) {
+                    PayReq req = new PayReq();
+                    req.appId = json.getString("appid");
+                    req.partnerId = json.getString("partnerid");
+                    req.prepayId = json.getString("prepayid");
+                    req.nonceStr = json.getString("noncestr");
+                    req.timeStamp = json.getString("timestamp");
+                    req.packageValue = json.getString("package");
+                    req.sign = json.getString("sign");
+                    req.extData = "app data"; // optional
+                    // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+                    api.sendReq(req);
+                } else {
+                    T.showShort(ManageCardActivity.this, "服务器参数有误");
+                }
+            } else {
+                T.showShort(ManageCardActivity.this, "您的微信版本不支持支付功能，请更新后再操作");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressLint("HandlerLeak")

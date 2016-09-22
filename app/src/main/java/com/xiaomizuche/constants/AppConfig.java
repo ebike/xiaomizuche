@@ -72,4 +72,6 @@ public class AppConfig {
     public static final String CenterLngLat = "CenterLngLat";
     //支付宝支付
     public static final int SDK_PAY_FLAG = 1;
+    //微信APPID
+    public static final String WX_APP_ID = "";
 }
