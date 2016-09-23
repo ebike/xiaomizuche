@@ -3,9 +3,9 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias '小米租车'
+            keyAlias '共享电动车'
             keyPassword 'jcsoft2014'
-            storeFile file('../zuche.jks')
+            storeFile file('../shareelectriccar.jks')
             storePassword 'jcsoft2014'
         }
     }
