@@ -56,7 +56,7 @@ public class DHttpUtils {
     public static void validateAuthorization(String result, final BaseActivity activity, DCommonCallback<String> callback) {
         ResponseBean<Object> bean = new Gson().fromJson(result, new TypeToken<ResponseBean<Object>>() {
         }.getType());
-        if (bean.getCode() == 0 && bean.getErrmsg().equals("认证失败")) {
+        if (bean.getCode() == -1) {
             CommonUtils.showCustomDialogSignle(activity, "", "您的登录信息过期，请重新登录", Gravity.LEFT | Gravity.CENTER_VERTICAL, new DSingleDialogCallback() {
                 @Override
                 public void onPositiveButtonClick(String editText) {
