@@ -1,11 +1,11 @@
 package com.xiaomizuche.base;
 
 import android.app.Application;
-import android.telephony.TelephonyManager;
 
 import com.xiaomizuche.constants.AppConfig;
 import com.xiaomizuche.db.DBHelper;
 import com.xiaomizuche.db.XUtil;
+import com.xiaomizuche.utils.CommonUtils;
 
 import org.xutils.x;
 
@@ -30,8 +30,9 @@ public class BaseApplication extends Application {
         // 初始化 JPush
         JPushInterface.init(this);
         //获取手机imei码
-        TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        AppConfig.imei = TelephonyMgr.getDeviceId();
+//        TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+//        AppConfig.imei = TelephonyMgr.getDeviceId();
+        AppConfig.imei = CommonUtils.getIdentity(this);
 
         DBHelper.instance(this);
     }

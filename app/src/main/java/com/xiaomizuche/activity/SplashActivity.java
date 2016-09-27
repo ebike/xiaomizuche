@@ -84,8 +84,8 @@ public class SplashActivity extends BaseActivity {
                 if (isStartUp) {
                     isStartUp = false;
                     //获取share中的账号、密码
-                    final String loginName = preferencesUtil.getPrefString(SplashActivity.this, AppConfig.LOGIN_NAME, "");
-                    final String password = preferencesUtil.getPrefString(SplashActivity.this, AppConfig.PASSWORD, "");
+                    final String loginName = (String) SPUtils.get(SplashActivity.this, AppConfig.LOGIN_NAME, "");
+                    final String password = (String) SPUtils.get(SplashActivity.this, AppConfig.PASSWORD, "");
                     if (!CommonUtils.strIsEmpty(loginName) && !CommonUtils.strIsEmpty(password)) {
                         Map<String, String> map = new HashMap<>();
                         map.put("loginName", loginName);

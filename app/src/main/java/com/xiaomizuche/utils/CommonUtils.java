@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +57,15 @@ public class CommonUtils {
     public static final String DATE_YEAR_MONTH_CH = "MM月dd日";
     public static final String DATE_YEAR_MONTH_DAY_CH = "yyyy年MM月dd日";
     private static PopupWindow popupWindow;
+
+    public static String getIdentity(Context context) {
+        String identity = (String) SPUtils.get(context, "identity", "");
+        if (strIsEmpty(identity)) {
+            identity = UUID.randomUUID().toString();
+            SPUtils.put(context, "identity", identity);
+        }
+        return identity;
+    }
 
     /**
      * 手机号码校验 11位以1开头
@@ -182,16 +192,24 @@ public class CommonUtils {
         try {
             Date d1 = df.parse(time);
             Date curDate = new Date(System.currentTimeMillis());
-            long diff = d1.getTime() - curDate.getTime();
+            String pre = "";
+            long diff = 0;
+            if (d1.getTime() < curDate.getTime()) {
+                diff = curDate.getTime() - d1.getTime();
+                pre = "超时";
+            } else {
+                diff = d1.getTime() - curDate.getTime();
+                pre = "";
+            }
 
             long days = diff / (1000 * 60 * 60 * 24);
             long hours = (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
             long minutes = (diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60)) / (1000 * 60);
 
             if ("0".equals(days + "")) {
-                return hours + "小时" + minutes + "分";
+                return pre + hours + "小时" + minutes + "分";
             } else {
-                return days + "天" + hours + "小时" + minutes + "分";
+                return pre + days + "天" + hours + "小时" + minutes + "分";
             }
         } catch (Exception e) {
             return "";

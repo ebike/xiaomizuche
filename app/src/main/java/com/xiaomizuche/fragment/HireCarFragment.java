@@ -227,6 +227,7 @@ public class HireCarFragment extends BaseFragment implements TextWatcher, Runnab
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hire_car, container, false);
         x.view().inject(this, view);
+        topBarView.setRightTextSize(12);
         initMapType(inflater);
         initCarStatus(inflater);
         mapView.onCreate(savedInstanceState);

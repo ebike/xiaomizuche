@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -227,6 +228,11 @@ public class TopBarView extends RelativeLayout {
         rightRelativeLayout.setVisibility(View.VISIBLE);
         rightTextView.setVisibility(View.VISIBLE);
         rightTextView.setText(text);
+    }
+
+    //设置右侧文字大小
+    public void setRightTextSize(int size) {
+        rightTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     //设置右侧文字
