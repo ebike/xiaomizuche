@@ -61,7 +61,7 @@ public class CommonUtils {
     public static String getIdentity(Context context) {
         String identity = (String) SPUtils.get(context, "identity", "");
         if (strIsEmpty(identity)) {
-            identity = UUID.randomUUID().toString();
+            identity = UUID.randomUUID().toString().replace("-", "");
             SPUtils.put(context, "identity", identity);
         }
         return identity;
