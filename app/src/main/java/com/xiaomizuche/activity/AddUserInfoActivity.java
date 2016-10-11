@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,41 +42,16 @@ public class AddUserInfoActivity extends BaseActivity {
 
     @ViewInject(R.id.et_name)
     EditText nameText;
-    @ViewInject(R.id.v_line_name)
-    View nameLine;
-    @ViewInject(R.id.ll_sex)
-    LinearLayout sexLayout;
     @ViewInject(R.id.tv_sex)
     TextView sexView;
     @ViewInject(R.id.et_id_card)
     EditText idCardText;
-    @ViewInject(R.id.v_line_id_card)
-    View idCardLine;
     @ViewInject(R.id.tv_area)
     TextView areaView;
-    @ViewInject(R.id.tv_user_type)
-    TextView userTypeView;
-    @ViewInject(R.id.ll_school)
-    LinearLayout schoolLayout;
     @ViewInject(R.id.tv_school)
     TextView schoolView;
-    @ViewInject(R.id.v_line_school)
-    View schoolLine;
-    @ViewInject(R.id.ll_address)
-    LinearLayout addressLayout;
-    @ViewInject(R.id.et_address)
-    EditText addressText;
-    @ViewInject(R.id.v_line_address)
-    View addressLine;
-    @ViewInject(R.id.btn_save)
-    Button saveButton;
 
-    private String name;
     private String sex;
-    private String idCard;
-    private String userType;
-    private String school;
-    private String address;
 
     private AddressThreeWheelViewDialog dialog;
     private List<LocationJson> mProvinceList;
@@ -153,11 +126,6 @@ public class AddUserInfoActivity extends BaseActivity {
         });
     }
 
-    @Event(value = R.id.ll_user_type)
-    private void userType(View view) {
-        chooseUserType();
-    }
-
     @Event(value = R.id.btn_save)
     private void save(View view) {
         if (CommonUtils.strIsEmpty(nameText.getText().toString().trim())) {
@@ -178,15 +146,7 @@ public class AddUserInfoActivity extends BaseActivity {
             T.showShort(this, "请选择省市区");
             return;
         }
-        if (CommonUtils.strIsEmpty(userType)) {
-            T.showShort(this, "请选择用户类型");
-            return;
-        }
-        if (userType.equals("2") && CommonUtils.strIsEmpty(addressText.getText().toString().trim())) {
-            T.showShort(this, "请输入详细地址");
-            return;
-        }
-        if (userType.equals("1") && CommonUtils.strIsEmpty(schoolView.getText().toString())) {
+        if (CommonUtils.strIsEmpty(schoolView.getText().toString())) {
             T.showShort(this, "请选择学校");
             return;
         }
@@ -195,15 +155,11 @@ public class AddUserInfoActivity extends BaseActivity {
         map.put("userName", nameText.getText().toString().trim());
         map.put("sex", sex);
         map.put("idNum", idCardText.getText().toString().trim());
-        map.put("userType", userType);
+        map.put("userType", "1");
         map.put("province", province);
         map.put("city", city);
         map.put("area", county);
-        if (userType.equals("1")) {
-            map.put("schoolId", schoolBean.getId());
-        } else if (userType.equals("2")) {
-            map.put("address", addressText.getText().toString().trim());
-        }
+        map.put("schoolId", schoolBean.getId());
         RequestParams params = DRequestParamsUtils.getRequestParams_Header(HttpConstants.perfectUserData(), map);
         DHttpUtils.post_String(this, true, params, new DCommonCallback<String>() {
             @Override
@@ -264,42 +220,6 @@ public class AddUserInfoActivity extends BaseActivity {
                 dialog.cancel();
                 sex = "2";
                 sexView.setText("保密");
-            }
-        });
-    }
-
-    private void chooseUserType() {
-        View view = LayoutInflater.from(this).inflate(R.layout.view_user_type, null, false);
-        TextView schoolUserView = (TextView) view.findViewById(R.id.tv_school_user);
-        TextView commonUserView = (TextView) view.findViewById(R.id.tv_common_user);
-        Drawable drawable = getResources().getDrawable(R.mipmap.icon_sel);
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        if (!CommonUtils.strIsEmpty(userType)) {
-            if ("1".equals(userType)) {
-                schoolUserView.setCompoundDrawables(null, null, drawable, null);
-            } else if ("2".equals(userType)) {
-                commonUserView.setCompoundDrawables(null, null, drawable, null);
-            }
-        }
-        final CustomDialog dialog = CommonUtils.showCustomDialog1(this, "选择用户类型", view);
-        schoolUserView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                userType = "1";
-                userTypeView.setText("学校用户");
-                schoolLayout.setVisibility(View.VISIBLE);
-                addressLayout.setVisibility(View.GONE);
-            }
-        });
-        commonUserView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                userType = "2";
-                userTypeView.setText("普通用户");
-                schoolLayout.setVisibility(View.GONE);
-                addressLayout.setVisibility(View.VISIBLE);
             }
         });
     }
